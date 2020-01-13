@@ -1,0 +1,47 @@
+The power of (having magic control over) light is at your fingertips, with it you can kill hoards of enemies or even the toughest worms effortlessly (after a small amount of farming to power up your weapons as much as you can)
+this mod even includes a drill!
+
+Changelog:
+0.2.4.1:
+Did I even relaease 0.2.4?
+Thought I'd lost all of my characters, turns out I just had to remove 2 lines.
+Now points of light actually save what enemies you got them from to your character properly instead of resetting when you exit the world.
+bug fixes.
+
+0.2.4:
+someone please tell me how to use github.
+hopefully fixed item charge display.
+Beam of Light now does more thing, try it.
+
+0.2.3:
+Beam of Light (or light staff if you want to just use the class name) now has an alt-fire, try it on everything!
+Even walls.
+enemy renaming code is now taken from prefixes for enemies, and will hopefully have more compatibility with said mod.
+added some slightly secret items, but I've forgotten what they are.
+
+0.2.2:
+had to rush this update because of a glitch too, the glitch might not have been in a released version, but just in case.
+
+0.2.1:
+I had to release this version early to fix points of light being unable to be used, there may be some minor bugs.
+
+0.2:
+added light javelin.
+added "ultimate abilities".
+umbra enemies can now give players a debuff that will weaken their damage and even kill them if it runs out, this debuff can be cured with a drop from the enemy.
+light weapons now deal more damage to umbra enemies.
+lux and umbra enemies now drop more coins.
+fixed bug added in v0.2 that prevented vanilla weapons dealing damage, however, this bug would never have been known about by anyone if I didn't put it in the patch notes, since it was fixed in the version that added it, so this entire line is basically just a joke.
+added Changelog.
+added Credits.
+
+0.1:
+initial release
+
+Credits:
+concept and most of the code: me
+code for renaming enemies (in older versions): Dark-Assassin (from  Enemy Affixes) (now from prefixes for enemies by Jofairden, although it's really just a single variable that I didn't know about before)
+help with finding out what I did wrong: people on the tmodloader discord
+the 3261 people who downloaded my first mod
+and finally
+the 449 people who had already downloaded this mod in the first few versions :)

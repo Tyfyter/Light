@@ -1,0 +1,12 @@
+author = Tyfyter (Tyfyter2002 on steam)
+
+version = 0.2.4.1
+
+displayName = Light
+
+homepage = https://sites.google.com/view/tyfyterpoorlymoddingterraria/home
+includeSource = true
+hideCode = false
+hideResources = false
+weakReferences = CalamityMod
+languageVersion = 6

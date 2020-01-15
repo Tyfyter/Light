@@ -1,3 +1,4 @@
+/*
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
@@ -27,7 +28,18 @@ namespace Light.Buffs
 			/*Projectile heldproj = ProjectileLoader.GetProjectile(player.heldProj).projectile;
 			if(player.HeldItem.melee && heldproj.timeLeft < 60){
 				
-			}*/
+			}//* /
 		}
 	}
-}
+	public class VineHookDebuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Vine Thorns");
+			Description.SetDefault("");
+            Main.pvpBuff[Type] = false;  //Tells the game if pvp buff or not. 
+			canBeCleared = false;
+			//Main.buffNoTimeDisplay[Type] = true;
+		}
+	}
+}*/

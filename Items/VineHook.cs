@@ -6,10 +6,13 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using System.Collections.Generic;
+using Light.NPCs;
+using static Light.NPCs.LightGlobalNPC;
 
 namespace Light.Items
 {
-	class VineHook : ModItem
+	class VineHook : ModItem, IMiscEquip
 	{
 		public override bool CloneNewInstances{
 			get { return true; }
@@ -40,7 +43,7 @@ namespace Light.Items
 			//item.name = "Wind Hook";
 			item.damage = 100;
 			item.crit = 4;
-			item.shootSpeed = 25f; // how quickly the hook is shot.
+			item.shootSpeed = 30f; // how quickly the hook is shot.
 			item.noUseGraphic = true;
 			item.useStyle = 5;
             //item.toolTip = modPlayer.pullhook + "";
@@ -51,23 +54,47 @@ namespace Light.Items
 		  DisplayName.SetDefault("Vine Hook");
 		  Tooltip.SetDefault("Forged from the soul of the jungle.");
 		}
-        public override void UpdateInventory(Player player){
-			player.chatOverhead.NewMessage("ham", 5);
+		public override void UpdateInventory(Player player){
+			List<(float,Action<Item>)> dmg = new List<(float,Action<Item>)> {
+			(player.meleeDamage, (i)=>{i.melee = true;}),
+			(player.rangedDamage, (i)=>{i.ranged = true;}),
+			(player.magicDamage, (i)=>{i.magic = true;}),
+			(player.minionDamage, (i)=>{i.summon = true;}),
+			(player.thrownDamage, (i)=>{i.thrown = true;})};
+			dmg.Sort((i1,i2)=>Math.Sign(i2.Item1-i1.Item1));
+			item.melee = false;
+			item.ranged = false;
+			item.magic = false;
+			item.summon = false;
+			item.thrown = false;
+			dmg[0].Item2(item);
 		}
-		public override void UpdateEquip(Player player){
-			item.damage = 1;
+		public void UpdateMisc(Player player){
+			List<(float,Action<Item>)> dmg = new List<(float,Action<Item>)> {
+			(player.meleeDamage, (i)=>{i.melee = true;}),
+			(player.rangedDamage, (i)=>{i.ranged = true;}),
+			(player.magicDamage, (i)=>{i.magic = true;}),
+			(player.minionDamage, (i)=>{i.summon = true;}),
+			(player.thrownDamage, (i)=>{i.thrown = true;})};
+			dmg.Sort((i1,i2)=>Math.Sign(i2.Item1-i1.Item1));
+			item.melee = false;
+			item.ranged = false;
+			item.magic = false;
+			item.summon = false;
+			item.thrown = false;
+			dmg[0].Item2(item);
 		}
-		public override void GetWeaponDamage(Player player, ref int damage){
-			float[] damagearray = new float[4] {player.meleeDamage,player.rangedDamage,player.magicDamage,player.thrownDamage};
-			Array.Sort(damagearray);
+		// public override void GetWeaponDamage(Player player, ref int damage){
+		// 	float[] damagearray = new float[4] {player.meleeDamage,player.rangedDamage,player.magicDamage,player.thrownDamage};
+		// 	Array.Sort(damagearray);
 
-			damage = (int)(damage * damagearray[0]);
-		}
-		public override void GetWeaponCrit(Player player, ref int crit){
-			int[] critarray = new int[4] {player.meleeCrit,player.rangedCrit,player.magicCrit,player.thrownCrit};
-			Array.Sort(critarray);
-			crit+=critarray[0];
-		}
+		// 	damage = (int)(damage * damagearray[0]);
+		// }
+		// public override void GetWeaponCrit(Player player, ref int crit){
+		// 	int[] critarray = new int[4] {player.meleeCrit,player.rangedCrit,player.magicCrit,player.thrownCrit};
+		// 	Array.Sort(critarray);
+		// 	crit+=critarray[0];
+		// }
 
         public override void AddRecipes()
         {
@@ -115,7 +142,8 @@ namespace Light.Items
 				this.timeLeft *= 10;
 			*/
 			projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
-			projectile.restrikeDelay /= 2;
+			//projectile.restrikeDelay /= 2;
+			projectile.usesLocalNPCImmunity = true;
 		}
 
 		// Use this hook for hooks that can have multiple hooks midflight: Dual Hook, Web Slinger, Fish Hook, Static Hook, Lunar Hook
@@ -188,15 +216,16 @@ namespace Light.Items
 		// default is 11, Lunar is 24
 		public override void GrappleRetreatSpeed(Player player, ref float speed)
 		{
-			speed = 20f;
+			speed = 25f;
 		}
 
 		public override void GrapplePullSpeed(Player player, ref float speed)
 		{
-			speed = 35f;
+			speed = 25f;
 		}
 		
 		public override void AI(){
+			//Main.player[projectile.owner].chatOverhead.NewMessage(projectile.velocity.Length().ToString(), 5);
 			int hooksOut = 0;
 			for (int l = 0; l < 1000; l++)
 			{
@@ -213,8 +242,7 @@ namespace Light.Items
 				if((Main.item[i].position - projectile.position).Length() <= 80){
 					Vector2 thatvector = (projectile.Center - Main.item[i].Center);
 					Vector2 thisstaticvector = projectile.Center - Main.item[i].Center;
-					thisstaticvector = thisstaticvector.Normalized() * 8;
-					thisstaticvector = new Vector2(Math.Min(thatvector.X, thisstaticvector.X), Math.Min(thatvector.Y, thisstaticvector.Y));
+					thisstaticvector = thisstaticvector.Normalized() * Math.Min(thatvector.Length(), 12.5f);
 					Main.item[i].velocity = (thatvector/5.5f) + thisstaticvector;
 				}
 			}
@@ -229,21 +257,21 @@ namespace Light.Items
 				playerCenter = Main.npc[projectile.owner].Center;
 			}
 			Vector2 distToProj = playerCenter - projectile.Center;
-			float projRotation = distToProj.ToRotation() - 1.57f;
+			float projRotation = distToProj.ToRotation();
 			float distance = distToProj.Length();
 			while (distance > 30f && !float.IsNaN(distance))
 			{
 				distToProj.Normalize();                 //get unit vector
-				distToProj *= 24f;                      //speed = 24
+				distToProj *= 12.5f;                      //speed = 24
 				center += distToProj;                   //update draw position
 				distToProj = playerCenter - center;    //update distance
 				distance = distToProj.Length();
-				Color drawColor = lightColor;
+				Color drawColor = Lighting.GetColor((int)(center.X/16),(int)(center.Y/16));
 
 				//Draw chain
 				spriteBatch.Draw(mod.GetTexture("Items/VineHookChain"), new Vector2(center.X - Main.screenPosition.X, center.Y - Main.screenPosition.Y),
-					new Rectangle(0, 0, Main.chain30Texture.Width, Main.chain30Texture.Height), drawColor, projRotation,
-					new Vector2(Main.chain30Texture.Width * 0.5f, Main.chain30Texture.Height * 0.5f), 1f, SpriteEffects.None, 0f);
+					new Rectangle(0, 0, 10, 6), drawColor, projRotation,
+					new Vector2(5, 3), 1f, SpriteEffects.None, 0f);
 			}
 			return true;
 		}
@@ -258,8 +286,10 @@ namespace Light.Items
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-			target.velocity = -projectile.velocity;
-			Main.player[projectile.owner].AddBuff(mod.GetBuff("VineHookBuff").Type, 90);
+			target.velocity = projectile.velocity.Length()==25?projectile.velocity:-projectile.velocity;
+			//Main.player[projectile.owner].AddBuff(mod.GetBuff("VineHookBuff").Type, 90);
+			Main.NewText($"0:{target.GetGlobalNPC<LightGlobalNPC>().knockBack}");
+			SetKBTime(target, 90);
 			target.AddBuff(BuffID.Venom, 300);
 			if(target.catchItem != 0){
 				target.position = projectile.Center - new Vector2(target.width/2, target.height/2);
@@ -303,6 +333,7 @@ namespace Light.Items
 
 		public override void AI(){
             projectile.rotation = projectile.velocity.ToRotation();
+			Main.player[projectile.owner].chatOverhead.NewMessage(projectile.velocity.Length().ToString(),5);
 		}
 
 
@@ -345,7 +376,7 @@ namespace Light.Items
 			Vector2 playerCenter = Main.npc[(int)projectile.ai[0]].Center;
 			Vector2 center = projectile.Center;
 			Vector2 distToProj = playerCenter - projectile.Center;
-			float projRotation = distToProj.ToRotation() - 1.57f;
+			float projRotation = distToProj.ToRotation() + (float)(Math.PI/2);
 			float distance = distToProj.Length();
 			while (distance > 30f && !float.IsNaN(distance))
 			{
@@ -366,7 +397,7 @@ namespace Light.Items
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-			target.velocity = -projectile.velocity;
+			target.velocity = projectile.active?-projectile.velocity:projectile.velocity;
         }
 		public override void OnHitPlayer(Player target, int damage, bool crit){
 			if(projectile.damage != 0){

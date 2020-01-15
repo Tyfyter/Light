@@ -15,10 +15,38 @@ namespace Light.NPCs
 		public override bool InstancePerEntity => true;
 		public override bool CloneNewInstances => true;
 		public List<Player> debuffed = new List<Player>(){};
+		internal knockBack knockBack = new knockBack();
+		public static void SetKBTime(NPC npc, int time){
+			LightGlobalNPC gNPC = npc.GetGlobalNPC<LightGlobalNPC>();
+			Main.NewText($"1:{gNPC.knockBack}");
+			if(time == 0){
+				Main.NewText("path 0");
+				if(gNPC.knockBack.dur>0)gNPC.knockBack.dur = 1;
+			}else{
+				Main.NewText("path 1");
+				if(gNPC.knockBack.dur == 0){
+					Main.NewText("path 2");
+					gNPC.knockBack.KB = npc.knockBackResist;
+				}
+				npc.knockBackResist = 1;
+				gNPC.knockBack.dur = time;
+			}
+			Main.NewText($"2:{gNPC.knockBack}");
+		}
 		public override void AI(NPC npc){
 			base.AI(npc);
 			if(npc.HasBuff(BuffType<Blind>())){
 				npc.target = -1;
+			}
+			if(knockBack.dur>0){
+				//npc.knockBackResist = 1;
+				if(--knockBack.dur==0){
+					//Main.NewText($"{npc.knockBackResist};{knockBack.KB}");
+					npc.knockBackResist = knockBack.KB;
+					//Main.NewText($"{npc.knockBackResist};{knockBack.KB}");
+				}
+				//Main.NewText($"{npc.knockBackResist};{knockBack.KB}");
+				//Main.NewText($"{knockBack}");
 			}
 		}
         public override void ResetEffects(NPC npc)
@@ -132,5 +160,12 @@ namespace Light.NPCs
 				target.AddBuff(BuffType<ShadeDebuff>(), 900);
 			}
 		}//*/
+	}
+	internal class knockBack {
+		internal int dur = 0;
+		internal float KB = 0;
+		public override string ToString(){
+			return $"KB:{KB} time:{dur}";
+		}
 	}
 }

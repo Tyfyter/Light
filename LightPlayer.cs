@@ -66,6 +66,14 @@ namespace Light {
 				}
 			}
         }
+        public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff){
+            for(int i = 0; i < 5; i++){
+                IMiscEquip item = (player.miscEquips[i].modItem) as IMiscEquip;
+                if(item!=null){
+                    item.UpdateMisc(player);
+                }
+            }
+        }
         public override bool ShiftClickSlot(Item[] inventory, int context, int slot){
             if(player.HeldItem.type == mod.GetItem("Light_Javelin").item.type && inventory[slot].type == ItemID.SoulofMight && inventory[slot].stack >= 20){
                 //((Items.Soul_Light_Javelin)player.HeldItem).ascend(5);

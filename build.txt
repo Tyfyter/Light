@@ -4,9 +4,8 @@ version = 0.2.4.1
 
 displayName = Light
 
-homepage = https://sites.google.com/view/tyfyterpoorlymoddingterraria/home
+homepage = https://tyfyter.github.io/
 includeSource = true
 hideCode = false
 hideResources = false
 weakReferences = CalamityMod
-languageVersion = 6

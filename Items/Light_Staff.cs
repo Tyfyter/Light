@@ -69,7 +69,7 @@ DisplayCharge1");
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             Player player = Main.player[item.owner];
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
+            LightPlayer modPlayer = player?.GetModPlayer<LightPlayer>();
             for (int i = 0; i < tooltips.Count; i++)
             {
                 if (tooltips[i].text.Contains("DisplayCharge2"))
@@ -79,7 +79,7 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "DisplayCharge2",
 					"current charge level: " + charge);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer.LightColor;
+					tip.overrideColor = modPlayer?.LightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if (tooltips[i].text.Contains("current charge level"))
@@ -89,7 +89,7 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "DisplayCharge2",
 					"current charge level: " + charge);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer.LightColor;
+					tip.overrideColor = modPlayer?.LightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if (tooltips[i].text.Contains("melee"))
@@ -100,13 +100,13 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "melee",
                         SplitText[0]+" light damage");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer.LightColor;
+					tip.overrideColor = modPlayer?.LightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if(tooltips[i].text.Contains("Light Staff")){
 					TooltipLine tip;
 					tip = new TooltipLine(mod, "", tooltips[i].text);
-					tip.overrideColor = modPlayer.LightColor;
+					tip.overrideColor = modPlayer?.LightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
 				}else if(tooltips[i].text.Contains("Rainbow Staff")){
@@ -119,7 +119,7 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "DisplayCharge1",
                         "Hold " +Light.ChargeKey+" to charge.");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer.LightColor;
+					tip.overrideColor = modPlayer?.LightColor;
                     tooltips.RemoveAt(i);
 					//if(charge < maxcharge){
                     	tooltips.Insert(i, tip);

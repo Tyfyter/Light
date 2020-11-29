@@ -72,7 +72,7 @@ namespace Light.Items
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             Player player = Main.player[item.owner];
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
+            LightPlayer modPlayer = player?.GetModPlayer<LightPlayer>();
             for (int i = 0; i < tooltips.Count; i++)
             {
                 if (tooltips[i].text.Contains("DisplayCharge"))
@@ -82,7 +82,7 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "DisplayCharge",
 					"current defence level: " + (int)(charge+30));
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer.LightColor;
+					tip.overrideColor = modPlayer?.LightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }

@@ -378,7 +378,7 @@ namespace Light.Items
                 //velocity = new Vector2(player.direction * item.shootSpeed, 0); //Straight in the direction the player is facing
                 velocity =  Vector2.Lerp(Main.MouseWorld - player.Center, Main.MouseWorld - position, 0.5f).OfLength(item.shootSpeed+1); //Direction is a middlepoint between straight from the player to the cursor and straight from the sword to the cursor
 				Projectile.NewProjectile(position, velocity, type, damage, knockBack, player.whoAmI);
-				for (int i = 0; i < 7; i++) //Makes 20 attempts at finding a projectile position that the player can reach. Gives up otherwise.
+				for (int i = 0; i < 7; i++)
 				{
 					int dust = Dust.NewDust(position-new Vector2(4, 8), 8, 16, 267, 0f, 0f, 0, color, 1f);
 					Main.dust[dust].noGravity = true;

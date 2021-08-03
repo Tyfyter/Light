@@ -14,9 +14,7 @@ namespace Light.Items
 {
 	class VineHook : ModItem, IMiscEquip
 	{
-		public override bool CloneNewInstances{
-			get { return true; }
-		}
+		public override bool CloneNewInstances => true;
 		public override void SetDefaults()
         {
             /*Player player = Main.player[item.owner];
@@ -123,7 +121,7 @@ namespace Light.Items
 			}
 			return true;
 		}//*/
-		
+
 
     }
 	class VineHookProjectile : ModProjectile
@@ -223,7 +221,7 @@ namespace Light.Items
 		{
 			speed = 25f;
 		}
-		
+
 		public override void AI(){
 			//Main.player[projectile.owner].chatOverhead.NewMessage(projectile.velocity.Length().ToString(), 5);
 			int hooksOut = 0;
@@ -410,12 +408,12 @@ namespace Light.Items
     }
 
 	// Animated hook example
-	// Multiple, 
+	// Multiple,
 	// only 1 connected, spawn mult
 	// Light the path
 	// Gem Hooks: 1 spawn only
 	// Thorn: 4 spawns, 3 connected
-	// Dual: 2/1 
+	// Dual: 2/1
 	// Lunar: 5/4 -- Cycle hooks, more than 1 at once
 	// AntiGravity -- Push player to position
 	// Static -- move player with keys, don't pull to wall

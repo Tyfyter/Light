@@ -27,9 +27,7 @@ namespace Light.Items
 		int PointsUsed = 4;
         public static short customGlowMask = 0;
 		public static string AbilityName = "";
-		public override bool CloneNewInstances{
-			get { return true; }
-		}
+        public override bool CloneNewInstances => true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Light Dagger");
@@ -60,7 +58,7 @@ namespace Light.Items
 			item.shopCustomPrice = 30;
 			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
-		
+
 		public override TagCompound Save()
 		{
 			return new TagCompound {
@@ -80,7 +78,7 @@ namespace Light.Items
 			charge = Main.player[item.owner].GetModPlayer<LightPlayer>().tempcharge;
 			Main.player[item.owner].GetModPlayer<LightPlayer>().tempcharge = 0;
 		}
-		
+
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             Player player = Main.player[item.owner];
@@ -94,7 +92,7 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "DisplayCharge2",
 					"current charge level: " + charge+";"+Math.Round((float)(modPlayer.LightStealth/modPlayer.LightStealthMax)*100)+";"+player.aggro);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if ((tooltips[i].text.Contains("DisplayCharge2") || tooltips[i].Name == "DisplayCharge2") && modPlayer.LightStealthMax == 0)
@@ -104,7 +102,7 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "DisplayCharge2",
 					"current charge level: " + charge);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if (tooltips[i].text.Contains("throwing"))
@@ -115,7 +113,7 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "throwing",
                         SplitText[0]+" light damage");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if (tooltips[i].text.Contains("melee"))
@@ -126,13 +124,13 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "melee",
                         SplitText[0]+" light damage");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if(tooltips[i].text.Contains("Light Dagger")){
 					TooltipLine tip;
 					tip = new TooltipLine(mod, "", tooltips[i].text);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
 				}else if(tooltips[i].text.Contains("Rainbow Dagger")){
@@ -145,7 +143,7 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "DisplayCharge1",
                         "Hold " +Light.ChargeKey+" to charge.");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
 					if(charge < maxcharge-1){
                     	tooltips.Insert(i, tip);
@@ -157,7 +155,7 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "DisplayCharge1",
                         "Press (insert ultimate hotkey here) to use radial blind");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
 					if(charge < maxcharge-1){
                     	tooltips.Insert(i, tip);
@@ -176,7 +174,7 @@ namespace Light.Items
 				}//*/
             }
         }
-		
+
         public override bool AltFunctionUse(Player player)
         {
             return true;
@@ -225,7 +223,7 @@ namespace Light.Items
             {
                 item.holdStyle = 2;
 				item.noUseGraphic = false;
-				Color color = modPlayer.LightColor;
+				Color color = modPlayer.lightColor;
 				//red | green| blue
 				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
 				if(charge < maxcharge && base.CanUseItem(player)){
@@ -276,7 +274,7 @@ namespace Light.Items
 				item.useTime = 20;
 				item.useAnimation = 20;
 			}
-			
+
             // From lunar emblems
             if (modPlayer.channeling > 0)
             {
@@ -289,7 +287,7 @@ namespace Light.Items
 				}
             }*/
 		}
- 
+
         public override bool CanUseItem(Player player)
         {
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
@@ -324,7 +322,7 @@ namespace Light.Items
 				}
 			}
             /*if (modPlayer.channeling > 0)
-            {  
+            {
 				item.shoot = 0;
 				item.useStyle = 4;
 				item.noUseGraphic = false;
@@ -349,13 +347,13 @@ namespace Light.Items
             }*/
             return base.CanUseItem(player);
         }
-		
+
 		public override bool CanRightClick(){
 			return true;
 		}
 		public override void RightClick(Player player){
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-PointsUsed, 0);
+			//modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-PointsUsed, 0);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
 		}
 		public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit){

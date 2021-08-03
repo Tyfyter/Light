@@ -11,10 +11,7 @@ namespace Light.Items
 {
 	public class Point_Of_Light : ModItem
 	{
-		int droppedby = 0;
-		public override bool CloneNewInstances{
-			get { return true; }
-		}
+        public override bool CloneNewInstances => true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Point Of Light");
@@ -28,31 +25,23 @@ namespace Light.Items
 			item.useAnimation = 20;
 			item.useStyle = 1;
 			item.knockBack = 6;
-			item.value = 0;
+			item.value = -1;
 			item.rare = 2;
             item.maxStack = 999;
 			item.UseSound = null;
 			item.autoReuse = true;
 		}
-		
- 
+
+
         public override bool CanUseItem(Player player)
         {
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			int a = NPC.NewNPC((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, mod.NPCType("LightForgeNpc"));
+			int a = NPC.NewNPC((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<LightForgeNpc>());
 			((LightForgeNpc)Main.npc[a].modNPC).owner = modPlayer;
 			Main.npc[a].GivenName = ((LightForgeNpc)Main.npc[a].modNPC).TownNPCName();
             return base.CanUseItem(player);
         }
-		
-		/*public override bool CanRightClick(){
-			return true;
-		}
-		public override void RightClick (Player player){
-			NPC.NewNPC((int)player.position.X, (int)player.position.Y, mod.NPCType("LightForgeNpc"));
-			item.stack++;
-		}*/
-		
+
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             for (int i = 0; i < tooltips.Count; i++)
@@ -64,16 +53,16 @@ namespace Light.Items
                 tooltips.Insert(i, tip);
             }
         }
-		public override bool OnPickup (Player player){
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
+		public override bool OnPickup(Player player){
+            LightPlayer lightPlayer = player.GetModPlayer<LightPlayer>();
 			int droppedby = item.value;
-			item.value = 0;
-			Light.SetBitToInt(ref modPlayer.PointsFrom, droppedby);
+			item.value = -1;
+            lightPlayer.PointsCollected[item.value] = true;
 			return true;
 		}
-		public override bool CanPickup (Player player){
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			if(Light.GetBitFromInt(modPlayer.PointsFrom,item.value) && item.value != 0){
+		public override bool CanPickup(Player player){
+            LightPlayer lightPlayer = player.GetModPlayer<LightPlayer>();
+			if(lightPlayer.PointsCollected[item.value]){
 				return false;
 			}
 			return true;

@@ -18,9 +18,7 @@ namespace Light.Items
 		{
 			get { return "Terraria/Item_" + ItemID.HellwingBow; }
 		}*/
-		public override bool CloneNewInstances{
-			get { return true; }
-		}
+		public override bool CloneNewInstances => true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Light Armor");
@@ -41,14 +39,14 @@ namespace Light.Items
 			item.UseSound = SoundID.Item9;
 			item.autoReuse = false;
 		}
-		
+
 		public override TagCompound Save()
 		{
 			return new TagCompound {
 				{"charge",charge}
 			};
 		}
-		
+
 		public override void Load(TagCompound tag)
 		{
 			charge = tag.GetInt("charge");
@@ -82,7 +80,7 @@ namespace Light.Items
                     tip = new TooltipLine(mod, "DisplayCharge",
 					"current defence level: " + (int)(charge+30));
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }
@@ -93,11 +91,11 @@ namespace Light.Items
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
             item.holdStyle = 0;
 			//item.defence = 30+charge;
-			
+
             if (modPlayer.channeling > 0)
             {
                 item.holdStyle = 1;
-				Color color = modPlayer.LightColor;
+				Color color = modPlayer.lightColor;
 				//red | green| blue
 				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
 				if(charge < maxcharge && base.CanUseItem(player)){
@@ -119,7 +117,7 @@ namespace Light.Items
 				item.useTime = 20;
 				item.useAnimation = 20;
 			}
-			
+
             // From lunar emblems
             if (modPlayer.channeling > 0)
             {

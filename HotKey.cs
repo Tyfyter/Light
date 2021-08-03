@@ -12,16 +12,17 @@ using Terraria.DataStructures;
 using Terraria.GameContent.UI;
 
 namespace Light {
-    public class HotKey {
-        private string name;
-        private Keys defaultKey;
-        
-        public string Name { get { return name; } }
-        public Keys DefaultKey { get { return defaultKey; } }
+    public struct HotKey {
+
+        public string Name { get; private set; }
+        public Keys DefaultKey { get; private set; }
 
         public HotKey(string name, Keys defaultKey) {
-            this.name = name;
-            this.defaultKey = defaultKey;
+            this.Name = name;
+            this.DefaultKey = defaultKey;
+        }
+        public ModHotKey Register(Mod mod) {
+            return mod.RegisterHotKey(Name, DefaultKey.ToString());
         }
     }
 }

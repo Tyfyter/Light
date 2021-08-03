@@ -12,7 +12,7 @@ namespace Light.Buffs
 			DisplayName.SetDefault("Powerless");
 			Description.SetDefault("Ten thousand promises, ten thousand ways to lose");
             Main.debuff[Type] = true;   //Tells the game if this is a buff or not.
-            Main.pvpBuff[Type] = true;  //Tells the game if pvp buff or not. 
+            Main.pvpBuff[Type] = true;  //Tells the game if pvp buff or not.
 			canBeCleared = false;
 			//Main.buffNoTimeDisplay[Type] = true;
 		}
@@ -39,10 +39,10 @@ namespace Light.Buffs
 				Main.dust[dust2].velocity /= 10f;
 				Main.dust[dust2].scale = 1f;
 			}
-			if(player.buffTime[buffIndex] > 0 && modPlayer.ShadeCure >= 1){
+			if(player.buffTime[buffIndex] > 0 && modPlayer.shadeCure >= 1){
 				player.buffTime[buffIndex] = 0;
 			}
-			if(player.buffTime[buffIndex] <= 1 && modPlayer.ShadeCure < 1){
+			if(player.buffTime[buffIndex] <= 1 && modPlayer.shadeCure < 1){
 				player.statLife = 0;
 				for (int i = 0; i < 15; i++){
 					Dust.NewDust(player.position, player.width, player.height, 14, 0f, 0f, 0, new Color (255, 0, 0));

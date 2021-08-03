@@ -85,16 +85,9 @@ DisplayCharge1");
 			item.shopCustomPrice = 10;
 			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
-		public override void ModifyTooltips(List<TooltipLine> tooltips){
-            Player player = Main.player[item.owner];
-            LightPlayer lightPlayer = player?.GetModPlayer<LightPlayer>();
-            if(player!=null) {
-                ModifyTooltips(tooltips, lightPlayer);
-            }
-
-        }
 		public override TagCompound Save() {
-			return new TagCompound { {"charge",charge}
+			return new TagCompound {
+                { "charge",charge }
 			};
 
 		}
@@ -119,7 +112,7 @@ DisplayCharge1");
 
 		public override void MeleeEffects(Player player, Rectangle hitbox) {
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			int dust = Dust.NewDust(hitbox.Center(), 0, 0, /*DustID.Vortex*/267, 0, 0, 25, modPlayer.LightColor);
+			int dust = Dust.NewDust(hitbox.Center(), 0, 0, /*DustID.Vortex*/267, 0, 0, 25, modPlayer.lightColor);
 			Main.dust[dust].noGravity = true;
 		}
 		public override void UpdateInventory(Player player){
@@ -136,7 +129,7 @@ DisplayCharge1");
 
             if (modPlayer.channeling > 0) {
                 item.holdStyle = 1;
-				Color color = modPlayer.LightColor;
+				Color color = modPlayer.lightColor;
 				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);
 				if(charge < MaxCharge && base.CanUseItem(player)){
 					for (int j = 0; j < player.inventory.Length; j++) {
@@ -147,14 +140,6 @@ DisplayCharge1");
 					}
 				}
             }
-		}
-		public override bool CanRightClick(){
-			return true;
-		}
-		public override void RightClick (Player player){
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-PointsUsed, 0);
-			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
 		}
 	}
 }

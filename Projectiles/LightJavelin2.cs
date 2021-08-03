@@ -41,7 +41,7 @@ namespace Light.Projectiles
             Player player = Main.player[projectile.owner];
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
             projectile.rotation = projectile.velocity.ToRotation() + 0.785f;
-			Color color = modPlayer.LightColor;
+			Color color = modPlayer.lightColor;
             //red | green| blue
             Lighting.AddLight(projectile.Center, color.R/255, color.G/255, color.B/255);
 
@@ -50,16 +50,16 @@ namespace Light.Projectiles
                 int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, 267, projectile.velocity.X * 0.33f, projectile.velocity.Y * 0.33f, 100, color, 0.75f);
 				Main.dust[dust].noGravity = true;
             }
-            
+
         }
-		
+
 	    public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
             Player player = Main.player[projectile.owner];
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
 			//Redraw the projectile with the color not influenced by light
 			Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, projectile.height * 0.5f);
-			Color color = modPlayer.LightColor;
+			Color color = modPlayer.lightColor;
 			/*for (int k = 0; k < projectile.oldPos.Length; k++)
 			{
 				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY);

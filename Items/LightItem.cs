@@ -1,59 +1,49 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace Light.Items {
     public abstract class LightItem : ModItem {
+        public static HashSet<int> LightItems { get; internal set; }
 		public int charge = 0;
 		public virtual int MaxCharge { get => 10; set { } }
 		public virtual int PointsUsed => 1;
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-
-        }
-        protected void ModifyTooltips(List<TooltipLine> tooltips, LightPlayer lightPlayer) {
+			Color color = LightConfig.Instance.LightColor;
             if(tooltips[0].text.Contains("Rainbow")){
-                tooltips[0].overrideColor = Main.DiscoColor;
-			}else {
-                tooltips[0].overrideColor = lightPlayer?.LightColor;
+                color = Main.DiscoColor;
 			}
             for (int i = 0; i < tooltips.Count; i++) {
-                if (tooltips[i].text.Contains("DisplayCharge2")) {
+                if (tooltips[i].Name.Equals("ItemName")) {
+                    tooltips[i].overrideColor = color;
+                }else if (tooltips[i].Name.Equals("Damage")) {
                     TooltipLine tip;
 					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "DisplayCharge2",
-					"current charge level: " + charge);
+                    tip = new TooltipLine(mod, "LightDamage", tooltips[i].text);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = lightPlayer?.LightColor;
+					tip.overrideColor = color;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
-                }else if (tooltips[i].text.Contains("current charge level")) {
+                }else if (tooltips[i].Name.Equals("Tooltip1")) {
                     TooltipLine tip;
 					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "DisplayCharge2",
-					"current charge level: " + charge);
+                    tip = new TooltipLine(mod, "Tooltip1",
+					"Current charge level: " + charge);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = lightPlayer?.LightColor;
+					tip.overrideColor = color;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
-                }else if (tooltips[i].text.Contains("melee")) {
-					string[] SplitText = tooltips[i].text.Split();
+                }else if (tooltips[i].Name.Equals("Tooltip2")) {
                     TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "melee",
-                        SplitText[0]+" light damage");
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = lightPlayer?.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-                }else if (tooltips[i].text.Contains("DisplayCharge1")) {
-                    TooltipLine tip;
-                    tip = new TooltipLine(mod, "DisplayCharge1",
-                        "Hold " +Light.ChargeKey+" to charge.");
-					tip.overrideColor = lightPlayer?.LightColor;
+                    tip = new TooltipLine(mod, "Tooltip2",
+                        "Hold " +Light.ChargeKey.GetHotkeyBinding()+" to charge.");
+					tip.overrideColor = color;
                     tooltips.RemoveAt(i);
 					if(charge < MaxCharge){
                     	tooltips.Insert(i, tip);
@@ -61,5 +51,13 @@ namespace Light.Items {
                 }
             }
         }
+		public override TagCompound Save(){
+			return new TagCompound {
+				{"charge",charge}
+			};
+		}
+		public override void Load(TagCompound tag){
+			charge = tag.GetInt("charge");
+		}
     }
 }

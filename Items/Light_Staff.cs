@@ -16,9 +16,7 @@ namespace Light.Items
 		int maxcharge = 25;
 		int PointsUsed = 2;
         public static short customGlowMask = 0;
-		public override bool CloneNewInstances{
-			get { return true; }
-		}
+		public override bool CloneNewInstances => true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Beam of Light");
@@ -45,14 +43,14 @@ DisplayCharge1");
 			item.shopCustomPrice = 15;
 			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
-		
+
 		public override TagCompound Save()
 		{
 			return new TagCompound {
 				{"charge",charge}
 			};
 		}
-		
+
 		public override void Load(TagCompound tag)
 		{
 			charge = tag.GetInt("charge");
@@ -79,7 +77,7 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "DisplayCharge2",
 					"current charge level: " + charge);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if (tooltips[i].text.Contains("current charge level"))
@@ -89,7 +87,7 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "DisplayCharge2",
 					"current charge level: " + charge);
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if (tooltips[i].text.Contains("melee"))
@@ -100,13 +98,13 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "melee",
                         SplitText[0]+" light damage");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
                 }else if(tooltips[i].text.Contains("Light Staff")){
 					TooltipLine tip;
 					tip = new TooltipLine(mod, "", tooltips[i].text);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
 				}else if(tooltips[i].text.Contains("Rainbow Staff")){
@@ -119,7 +117,7 @@ DisplayCharge1");
                     tip = new TooltipLine(mod, "DisplayCharge1",
                         "Hold " +Light.ChargeKey+" to charge.");
                     //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
+					tip.overrideColor = modPlayer?.lightColor;
                     tooltips.RemoveAt(i);
 					//if(charge < maxcharge){
                     	tooltips.Insert(i, tip);
@@ -127,7 +125,7 @@ DisplayCharge1");
                 }
             }
         }
-		
+
         public override bool AltFunctionUse(Player player)
         {
             return true;
@@ -166,7 +164,7 @@ DisplayCharge1");
 				}
 			}
             /*if (modPlayer.channeling > 0)
-            {  
+            {
 				item.shoot = 0;
 				item.useStyle = 4;
 				item.noUseGraphic = false;
@@ -216,7 +214,7 @@ DisplayCharge1");
             {
                 item.holdStyle = 2;
 				item.noUseGraphic = false;
-				Color color = modPlayer.LightColor;
+				Color color = modPlayer.lightColor;
 				//red | green| blue
 				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
 				if(charge < maxcharge && base.CanUseItem(player)){
@@ -239,7 +237,7 @@ DisplayCharge1");
 				item.useTime = 20;
 				item.useAnimation = 20;
 			}
-			
+
             // From lunar emblems
             if (modPlayer.channeling > 0)
             {
@@ -257,7 +255,7 @@ DisplayCharge1");
 		}
 		public override void RightClick (Player player){
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-PointsUsed, 0);
+			//modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-PointsUsed, 0);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
 		}
 	}

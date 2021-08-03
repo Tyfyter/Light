@@ -17,9 +17,7 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
             name = "Custom Town NPC";
             return mod.Properties.Autoload;
         }//*/
-        public override bool CloneNewInstances{
-            get {return true;}
-        }
+        public override bool CloneNewInstances => true;
         public Color color = Color.White;
         public LightPlayer owner;
 		public override void SetStaticDefaults()
@@ -29,11 +27,11 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
             NPCID.Sets.ExtraFramesCount[npc.type] = 9;
             NPCID.Sets.AttackFrameCount[npc.type] = 4;
             NPCID.Sets.DangerDetectRange[npc.type] = 150; //this defines the npc danger detect range
-            NPCID.Sets.AttackType[npc.type] = 2; //this is the attack type,  0 (throwing), 1 (shooting), or 2 (magic). 3 (melee) 
+            NPCID.Sets.AttackType[npc.type] = 2; //this is the attack type,  0 (throwing), 1 (shooting), or 2 (magic). 3 (melee)
             NPCID.Sets.AttackTime[npc.type] = 30; //this defines the npc attack speed
             NPCID.Sets.AttackAverageChance[npc.type] = 100;//this defines the npc atack chance
 		}
-		
+
         public override void SetDefaults()
         {
             //npc.name = "Light Forge";   //the name displayed when hovering over the npc ingame.
@@ -53,7 +51,7 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
             NPCID.Sets.ExtraFramesCount[npc.type] = 9;
             NPCID.Sets.AttackFrameCount[npc.type] = 4;
             NPCID.Sets.DangerDetectRange[npc.type] = 150; //this defines the npc danger detect range
-            NPCID.Sets.AttackType[npc.type] = 2; //this is the attack type,  0 (throwing), 1 (shooting), or 2 (magic). 3 (melee) 
+            NPCID.Sets.AttackType[npc.type] = 2; //this is the attack type,  0 (throwing), 1 (shooting), or 2 (magic). 3 (melee)
             NPCID.Sets.AttackTime[npc.type] = 30; //this defines the npc attack speed
             NPCID.Sets.AttackAverageChance[npc.type] = 100;//this defines the npc atack chance
             NPCID.Sets.HatOffsetY[npc.type] = 4; //this defines the party hat position
@@ -61,7 +59,7 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
         }
 		public override void AI(){
             try{
-                color = owner.LightColor;
+                color = owner.lightColor;
             }catch(Exception){
 				npc.life = 0;
             }
@@ -85,7 +83,7 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
             }
         }
 
-        public override void SetChatButtons(ref string button, ref string button2)  //Allows you to set the text for the buttons that appear on this town NPC's chat window. 
+        public override void SetChatButtons(ref string button, ref string button2)  //Allows you to set the text for the buttons that appear on this town NPC's chat window.
         {
             button = "Forge";   //this defines the buy button name
             button2 = "Dispel";   //this defines the buy button name
@@ -120,21 +118,19 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
             nextSlot++;
             shop.item[nextSlot].SetDefaults(ItemType<CustomSword>());  //this is an example of how to add a modded item
             nextSlot++;*/
-			
+
             shop.item[nextSlot].SetDefaults(ItemType<Light_Drill>());      //
             nextSlot++;
-            if (Main.LocalPlayer.GetModPlayer<LightPlayer>().Points_Of_Light >= 2)   //this make so when the player has 2 or more points of light the npc will sell this
-            {
+            //if (Main.LocalPlayer.GetModPlayer<LightPlayer>().pointsTotal >= 2){
 				shop.item[nextSlot].SetDefaults(ItemType<Light_Staff>());      //
                 nextSlot++;
-            }
-            if (Main.LocalPlayer.GetModPlayer<LightPlayer>().Points_Of_Light >= 4)   //this make so when the player has 4 or more points of light the npc will sell this
-            {
+            //}
+            //if (Main.LocalPlayer.GetModPlayer<LightPlayer>().pointsTotal >= 4){
 				shop.item[nextSlot].SetDefaults(ItemType<Light_Dagger>());      //
                 nextSlot++;
 				shop.item[nextSlot].SetDefaults(ItemType<Light_Javelin>());      //
                 nextSlot++;
-            }
+            //}
 
         }
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor){
@@ -175,7 +171,7 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
         public override void DrawTownAttackGun(ref float scale, ref int item, ref int closeness) //Allows you to customize how this town NPC's weapon is drawn when this NPC is shooting (this NPC must have an attack type of 1). Scale is a multiplier for the item's drawing size, item is the ID of the item to be drawn, and closeness is how close the item should be drawn to the NPC.
           {
             scale = 0f;
-            item = ItemType<LightI>();  
+            item = ItemType<LightI>();
             closeness = 20;
           }
           public override void TownNPCAttackProj(ref int projType, ref int attackDelay)//Allows you to determine the projectile type of this town NPC's attack, and how long it takes for the projectile to actually appear
@@ -188,7 +184,7 @@ namespace Light.NPCs            //We need this to basically indicate the folder 
           {
             multiplier = 7f;
             // randomOffset = 4f;
-          }   
+          }
 
     }
 }

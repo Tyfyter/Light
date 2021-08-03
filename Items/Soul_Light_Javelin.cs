@@ -25,7 +25,7 @@ namespace Light.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soul Boosted Light Javelin");
-			Tooltip.SetDefault(@"Right click to throw a volley of javelins 
+			Tooltip.SetDefault(@"Right click to throw a volley of javelins
 			Right click in your invetory to dispel
 			DisplayCharge2
 			DisplayCharge1");
@@ -33,7 +33,7 @@ namespace Light.Items
 			TypeNames[0] = "";
 			TypeNames[1] = "";
 			TypeNames[2] = "";
-			TypeNames[3] = "Draconian_";
+			TypeNames[3] = "Draconian";
 			TypeNames[4] = "";
 			TypeNames[5] = "";
 			TypeNames[6] = "";
@@ -61,115 +61,45 @@ namespace Light.Items
 			item.shopCustomPrice = 45;
 			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
-		
+
 		public override TagCompound Save()
 		{
+
 			return new TagCompound {
 				{"charge",charge},
 				{"charges",charges},
 				{"type", type}
 			};
 		}
-		
+
 		public override void Load(TagCompound tag)
 		{
 			charge = tag.GetInt("charge");
 			charges = tag.GetIntArray("charges");
 			type = tag.GetInt("type");
 		}
-		
+
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            Player player = Main.player[item.owner];
-            LightPlayer modPlayer = player?.GetModPlayer<LightPlayer>();
-            for (int i = 0; i < tooltips.Count; i++)
-            {
-                if (tooltips[i].text.Contains("DisplayCharge2"))
-                {
-                    TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "DisplayCharge2",
-					"current charge level: " + charge);
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-                }else if (tooltips[i].text.Contains("current charge level"))
-                {
-                    TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "DisplayCharge2",
-					"current charge level: " + charge);
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-                }else if (tooltips[i].text.Contains("melee"))
-                {
-					String[] SplitText = tooltips[i].text.Split();
-                    TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "melee",
-                        SplitText[0]+" light damage");
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-                }else if(tooltips[i].text.Contains("Light Javelin")){
-					TooltipLine tip;
-					tip = new TooltipLine(mod, "", TypeNames[type-1]+tooltips[i].text);
-					tip.overrideColor = modPlayer?.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-				}else if (tooltips[i].text.Contains("_"))
-                {
-					char[] separators = "_".ToCharArray();//new char[1];
-					//separators[0] = 
-					String[] SplitText = tooltips[i].text.Split(separators);
-                    TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "_",
-                        Light.ReconsructString(SplitText));
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-                }else if(tooltips[i].text.Contains("Rainbow Javelin")){
-					item.rare = -2;
-					item.expert = true;
-				}else if (tooltips[i].text.Contains("DisplayCharge1"))
-                {
-                    TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "DisplayCharge1",
-                        "Hold " +Light.ChargeKey+" to charge.");
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer?.LightColor;
-                    tooltips.RemoveAt(i);
-					if(charge < maxcharge){
-                    	tooltips.Insert(i, tip);
-					}
-                }/*else if (tooltips[i].text.Contains("*"))
-                {
-					String[] SplitText = tooltips[i].text.Split("*");
-                    TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "throwing",
-                        SplitText[SplitText.Length-1]+" light damage");
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-				}//*/
+            base.ModifyTooltips(tooltips);
+            for (int i = 0; i < tooltips.Count; i++){
+                if(tooltips[i].text.Contains("Light Javelin")){
+                    if(type>0) {
+					    TooltipLine tip = tooltips[i];
+                        tip.text = TypeNames[type - 1] + " " + tip.text;
+					    tip.overrideColor = LightConfig.Instance.LightColor;
+                    }
+                    break;
+				}
             }
         }
-		
+
         public override bool AltFunctionUse(Player player)
         {
             return true;
         }
-		
- 
+
+
         public override bool CanUseItem(Player player)
         {
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
@@ -188,44 +118,6 @@ namespace Light.Items
 				item.shoot = ProjectileType<LightJavelin>();
 				item.autoReuse = true;
 			}
-			/*if(player.altFunctionUse == 2){
-				item.channel = true;
-				if(knives < maxknives){
-					item.useStyle = 3;
-					knives++;
-					Dust.NewDust(player.Center, 1, 1, 226, 0, 0, 0, modPlayer.LightColor, 1.3f);
-					item.shoot = 0;
-				}
-				if(knives >= maxknives){
-					for(int i = 0; i >= knives; i++){
-						Dust.NewDust(player.Center, 1, 1, 226, 0, 0, 0, modPlayer.LightColor, 1.3f);
-					}
-				}
-			}
-            /*if (modPlayer.channeling > 0)
-            {  
-				item.shoot = 0;
-				item.useStyle = 4;
-				item.noUseGraphic = false;
-				item.useTime = 10;
-				item.useAnimation = 10;
-				if(charge < maxcharge && base.CanUseItem(player)){
-					for (int j = 0; j < player.inventory.Length; j++)
-					{
-						if (player.inventory[j].type == ItemType<Light>())
-						{
-							player.inventory[j].stack--;
-							charge++;
-							item.damage = 50+charge;
-							return true;
-						}
-					}
-				}else{
-					return false;
-				}
-            }else{
-				item.damage = 50+charge;
-            }*/
             return base.CanUseItem(player);
         }
 		public override void UpdateInventory(Player player){
@@ -244,18 +136,6 @@ namespace Light.Items
 					item.type = ItemType<Light_Javelin>();
 				}
 			}
-            /*
-			if (player.altFunctionUse == 2)     //2 is right click
-            {
-				item.useTime = 5;
-				item.useAnimation = 30;
-				if(player.itemAnimation >= 25){
-					//item.reuseDelay = 8;
-				}
-            }else if(player.itemAnimation == 0){
-				item.useTime = 20;
-				item.useAnimation = 20;
-			}//*/
 			item.damage = 225;
             item.holdStyle = 0;
 			if (player.altFunctionUse == 0 && player.itemAnimation == 0)     //2 is right click
@@ -269,21 +149,11 @@ namespace Light.Items
 			if(charge/maxcharge >= 0.75){
 				range = (int)(640+(16*(charge-(maxcharge*0.75))));
 			}
-			/*if(player.altFunctionUse == 2 && modPlayer.channeling <= 0){
-			}else if(!player.channel && knives > 0 && modPlayer.channeling <= 0){
-				//knives--;
-				item.useTime = 1;
-				item.useAnimation = 1;
-				player.controlUseItem = true;
-				item.shoot = ProjectileType<LightDagger>();
-				//Main.NewText(knives);
-			}else{//*/
-			//}
             if (modPlayer.channeling > 0)
             {
                 item.holdStyle = 2;
 				item.noUseGraphic = false;
-				Color color = modPlayer.LightColor;
+				Color color = modPlayer.lightColor;
 				//red | green| blue
 				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
 				if(charge < maxcharge && base.CanUseItem(player)){
@@ -321,33 +191,10 @@ namespace Light.Items
 			}else if(modPlayer.Ulting && modPlayer.UltCD > 0){
                 Main.NewText("Ultimate on cooldown, "+Math.Round((float)modPlayer.UltCD/60, 1)+" seconds left.");
 			}
-			/*if (modPlayer.channeling <= 0)
-            {
-				item.shoot = ProjectileType<LightDagger>();
-				item.useStyle = 4;
-				item.noUseGraphic = true;
-				item.useTime = 20;
-				item.useAnimation = 20;
-			}
-			
-            // From lunar emblems
-            if (modPlayer.channeling > 0)
-            {
-                if (player.itemAnimation == 0)
-                {
-					player.controlUseItem = true;
-					item.autoReuse = true;
-                }else{
-                    player.releaseUseItem = true;
-				}
-            }*/
-		}
-		public override bool CanRightClick(){
-			return true;
 		}
 		public override void RightClick (Player player){
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-4, 0);
+			//modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-4, 0);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemID.SoulofLight, charges[0]);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemID.SoulofNight, charges[1]);
@@ -357,11 +204,11 @@ namespace Light.Items
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemID.SoulofFlight, charges[5]);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<SoulOfInosite>(), charges[6]);
 		}
-		
+
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			Color color = modPlayer.LightColor;
+			Color color = modPlayer.lightColor;
             Vector2 velocity;
             if (player.altFunctionUse == 2 && player.itemAnimation < 25) //Right click
             {
@@ -369,9 +216,9 @@ namespace Light.Items
 				//Main.PlaySound(32, (int)player.position.X, (int)player.position.Y, 21, 5f);
 				//Main.PlaySound(13, (int)player.position.X, (int)player.position.Y, 1);
 				//Main.PlaySound(42, (int)player.position.X, (int)player.position.Y, 63);
-				for (int i = 0; i < 20; i++) //Makes 20 attempts at finding a projectile position that the player can reach. Gives up otherwise.
-				{
-					position = player.MountedCenter + (RandomFloat(FullCircle/-2).ToRotationVector2().OfLength(RandomInt(10, 50))); //Random rotation, random distance from the player
+				for (int i = 0; i < 20; i++) {
+                     //Random rotation, random distance from the player
+					position = player.MountedCenter + (Main.rand.NextVector2CircularEdge(1, 1) * Main.rand.NextFloat(10, 50));
 
 					if (Collision.CanHit(player.MountedCenter, 18, 18, position, 0, 0)) break;
 				}
@@ -387,7 +234,7 @@ namespace Light.Items
             }
 			return true;
         }
-		public override bool PreDrawInInventory(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale){
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale){
 
 			Texture2D texture = Main.itemTexture[item.type];
 			//Texture2D texture = mod.GetTexture("Items/"+TypeNames[type-1]+(this.GetType().Name.Remove(0, 4)));

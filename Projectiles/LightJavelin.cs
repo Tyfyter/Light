@@ -48,7 +48,7 @@ namespace Light.Projectiles
             Player projOwner = Main.player[projectile.owner];
             Player player = Main.player[projectile.owner];
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			Color color = modPlayer.LightColor;
+			Color color = modPlayer.lightColor;
             //red | green| blue
             Lighting.AddLight(projectile.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
             Vector2 ownerMountedCenter = projOwner.RotatedRelativePoint(projOwner.MountedCenter, true);
@@ -64,7 +64,7 @@ namespace Light.Projectiles
                     movementFactor = 3f;
                     projectile.netUpdate = true;
                 }
-                if (projOwner.itemAnimation < projOwner.itemAnimationMax / 3.1) 
+                if (projOwner.itemAnimation < projOwner.itemAnimationMax / 3.1)
                 {
                     movementFactor -= 2.4f;
                 }
@@ -80,7 +80,7 @@ namespace Light.Projectiles
             {
                 projectile.Kill();
             }*/
-			
+
 			if (projOwner.itemAnimation <= 1)
             {
                 projectile.Kill();
@@ -92,16 +92,16 @@ namespace Light.Projectiles
 				Main.dust[dust].noGravity = true;
                 //or 20 instead of 15
             }
-            
+
         }
-		
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
             Player player = Main.player[projectile.owner];
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
 			//Redraw the projectile with the color not influenced by light
 			Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, projectile.height * 0.5f);
-			Color color = modPlayer.LightColor;
+			Color color = modPlayer.lightColor;
 			/*for (int k = 0; k < projectile.oldPos.Length; k++)
 			{
 				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY);

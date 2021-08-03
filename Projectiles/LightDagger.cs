@@ -36,17 +36,17 @@ namespace Light.Projectiles
 		{
             Player player = Main.player[projectile.owner];
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			return modPlayer.LightColor;
+			return modPlayer.lightColor;
 		}
         public override void AI()
         {
             Player player = Main.player[projectile.owner];
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
             projectile.rotation = projectile.velocity.ToRotation() + 0.875f;
-			Color color = modPlayer.LightColor;
+			Color color = modPlayer.lightColor;
 			/*if(ModLoader.GetMod("CustomizerMod") != null){
 				if(ModLoader.GetMod("CustomizerMod").mod.ammoShaders[projectile.owner] == GameShaders.Armor.GetShaderIdFromItemId(3556)){
-					
+
 				}
 			}*/
             //red | green| blue
@@ -112,7 +112,7 @@ namespace Light.Projectiles
 					projectile.penetrate = -2;
 					target.AddBuff(BuffType<DisabledDebuff>(), 600);
 					target.scale = (float)Math.Max(target.scale-0.0025f, 0.99f);
-					
+
 					if(target.type != ModLoader.GetMod("CalamityMod").NPCType("DevourerofGodsHead")){
 						NPC target2 = Main.npc[(int)npc.ai[1]];
 						Vector2 newvel = new Vector2(target2.Center.X - projectile.position.X, target2.Center.Y - projectile.position.Y);
@@ -121,14 +121,14 @@ namespace Light.Projectiles
 						projectile.velocity = newvel;
 						projectile.ai[0] = target2.whoAmI;
 						projectile.tileCollide = false;
-						Color color = modPlayer.LightColor;
+						Color color = modPlayer.lightColor;
 						int dust2 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 226, 0f, 0f, 0, color);
 						Main.dust[dust2].velocity /= 10f;
 						Main.dust[dust2].scale = 1f;
 					}else{
 						target.life = Math.Max(target.life-50000,1);
 						npc.HitEffect(0, 50000.0);
-						Color color = modPlayer.LightColor;
+						Color color = modPlayer.lightColor;
 						for(int i = 0; i < 10; i++){
 						Dust.NewDust(projectile.position, projectile.width, projectile.height, 226, 0f, 0f, 0, color);
 						}
@@ -141,14 +141,14 @@ namespace Light.Projectiles
 				projectile.tileCollide = false;
 			}
         }
-		
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
             Player player = Main.player[projectile.owner];
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
 			//Redraw the projectile with the color not influenced by light
 			Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, projectile.height * 0.5f);
-			Color color = modPlayer.LightColor;
+			Color color = modPlayer.lightColor;
 			/*for (int k = 0; k < projectile.oldPos.Length; k++)
 			{
 				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY);
@@ -158,7 +158,7 @@ namespace Light.Projectiles
 			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.position, null, color, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 			return true;
 		}
-		
+
         //After the projectile is dead
         public override void Kill(int timeLeft)
         {
@@ -166,7 +166,7 @@ namespace Light.Projectiles
         }
 		/*
 			maybe you'll recognize this better...
-			
+
 			if (ModLoader.GetMod("ThoriumMod") != null)
 			{
 				if (npc.type == ModLoader.GetMod("ThoriumMod").NPCType("TheGrandThunderBird") ||

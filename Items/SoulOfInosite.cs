@@ -7,16 +7,14 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-//this item name shall be a monument of my refusal to name a soul item something that doesn't end in -ite for eternity. 
+//this item name shall be a monument of my refusal to name a soul item something that doesn't end in -ite for eternity.
 namespace Light.Items
 {
 	public class SoulOfInosite : ModItem
 	{
 		int rng;
 		int time = 0;
-		public override bool CloneNewInstances{
-			get { return true; }
-		}
+		public override bool CloneNewInstances => true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soul Of Inosite");
@@ -51,7 +49,7 @@ namespace Light.Items
 		{
 			grabRange *= 5;
 		}
-		/*public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float  scale, int whoAmI) 	
+		/*public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float  scale, int whoAmI)
 		{
 			Texture2D texture = Main.itemTexture[item.type];
 			Main.spriteBatch.Draw(Main.itemTexture[item.type], new Vector2(item.position.X - Main.screenPosition.X + item.width * 0.5f, item.position.Y - Main.screenPosition.Y + item.height - texture.Height * 0.5f + 2f), new Rectangle(0, 0, texture.Width, texture.Height), Color.DarkCyan, rotation, texture.Size() * 0.5f,scale, SpriteEffects.None, 0f);
@@ -77,7 +75,7 @@ namespace Light.Items
 			}
 			return true;
 		}
-		
+
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI){
 			if(time > 0){
 				time--;

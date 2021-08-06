@@ -92,23 +92,6 @@ namespace Light.Items
             item.holdStyle = 0;
 			//item.defence = 30+charge;
 
-            if (modPlayer.channeling > 0)
-            {
-                item.holdStyle = 1;
-				Color color = modPlayer.lightColor;
-				//red | green| blue
-				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
-				if(charge < maxcharge && base.CanUseItem(player)){
-					for (int j = 0; j < player.inventory.Length; j++)
-					{
-						if (player.inventory[j].type == ItemType<LightI>())
-						{
-							player.inventory[j].stack--;
-							charge++;
-						}
-					}
-				}
-            }
 			/*if (modPlayer.channeling <= 0)
             {
 				item.shoot = ProjectileType<LightDagger>();
@@ -129,12 +112,6 @@ namespace Light.Items
                     player.releaseUseItem = true;
 				}
             }*/
-		}
-		public override bool CanRightClick(){
-			return true;
-		}
-		public override void RightClick (Player player){
-			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), 10+charge);
 		}
 	}
 }

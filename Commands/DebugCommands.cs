@@ -90,32 +90,21 @@ namespace Light.Commands {
                         Main.NewText(Usage);
                     }
 				}
-			} else if(ModLoader.GetMod("DevHelp")!=null) {
+			} else if(ModLoader.GetMod("DevHelp") is Mod) {//null check on Dev Help
 				if(!int.TryParse(args[1], out int i)) {
                     Main.NewText(Usage);
                     return;
                 }
-				bool? valtoset = null;
-                if(args.Length>2) {
-				    switch (args[2].ToLower()) {
-					    case "1":
-					    case "true":
-					    valtoset = true;
-					    break;
-					    case "0":
-					    case "false":
-					    valtoset = false;
-					    break;
-				    }
-                }
-				switch(valtoset) {
-                    case true:
+				switch(args.Length>2?args[2].ToLower():null) {
+					case "1":
+					case "true":
                     player.Player.GetModPlayer<LightPlayer>().PointsCollected[i] = true;
                     break;
-                    case false:
+					case "0":
+					case "false":
                     player.Player.GetModPlayer<LightPlayer>().PointsCollected[i] = true;
                     break;
-                    case null:
+                    default:
                     player.Player.GetModPlayer<LightPlayer>().PointsCollected[i] ^= true;
                     break;
 				}

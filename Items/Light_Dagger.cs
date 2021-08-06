@@ -136,8 +136,7 @@ namespace Light.Items
 				}else if(tooltips[i].text.Contains("Rainbow Dagger")){
 					item.rare = -2;
 					item.expert = true;
-				}else if ((tooltips[i].text.Contains("DisplayCharge1") || tooltips[i].Name == "DisplayCharge1") && charge < maxcharge)
-                {
+				}/*else if ((tooltips[i].text.Contains("DisplayCharge1") || tooltips[i].Name == "DisplayCharge1") && charge < maxcharge) {
                     TooltipLine tip;
 					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
                     tip = new TooltipLine(mod, "DisplayCharge1",
@@ -148,8 +147,7 @@ namespace Light.Items
 					if(charge < maxcharge-1){
                     	tooltips.Insert(i, tip);
 					}
-                }else if ((tooltips[i].text.Contains("DisplayCharge1") || tooltips[i].Name == "DisplayCharge1") && charge >= maxcharge)
-                {
+                }else if ((tooltips[i].text.Contains("DisplayCharge1") || tooltips[i].Name == "DisplayCharge1") && charge >= maxcharge) {
                     TooltipLine tip;
 					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
                     tip = new TooltipLine(mod, "DisplayCharge1",
@@ -160,18 +158,7 @@ namespace Light.Items
 					if(charge < maxcharge-1){
                     	tooltips.Insert(i, tip);
 					}
-                }/*else if (tooltips[i].text.Contains("*"))
-                {
-					String[] SplitText = tooltips[i].text.Split("*");
-                    TooltipLine tip;
-					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
-                    tip = new TooltipLine(mod, "throwing",
-                        SplitText[SplitText.Length-1]+" light damage");
-                    //tip.overrideColor = new Color(255, 32, 174, 200);
-					tip.overrideColor = modPlayer.LightColor;
-                    tooltips.RemoveAt(i);
-                    tooltips.Insert(i, tip);
-				}//*/
+                }//*/
             }
         }
 
@@ -219,25 +206,6 @@ namespace Light.Items
 				duration = (int)(300+(15*(charge-(maxcharge*0.75))));
 			}
 			//}
-            if (modPlayer.channeling > 0)
-            {
-                item.holdStyle = 2;
-				item.noUseGraphic = false;
-				Color color = modPlayer.lightColor;
-				//red | green| blue
-				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
-				if(charge < maxcharge && base.CanUseItem(player)){
-					for (int j = 0; j < player.inventory.Length; j++)
-					{
-						if (player.inventory[j].type == ItemType<LightI>())
-						{
-							player.inventory[j].stack--;
-							charge++;
-							item.damage = 50+charge;
-						}
-					}
-				}
-            }
 
 			if(modPlayer.Ulting && modPlayer.UltCD <= 0 && charge/maxcharge >= 0.75){
 				for(int i2 = 0; i2 < Main.npc.Length; i2++){
@@ -307,55 +275,9 @@ namespace Light.Items
 				item.noUseGraphic = false;
 				//modPlayer.LightStealth = 0;
 			}
-			/*if(player.altFunctionUse == 2){
-				item.channel = true;
-				if(knives < maxknives){
-					item.useStyle = 3;
-					knives++;
-					Dust.NewDust(player.Center, 1, 1, 226, 0, 0, 0, modPlayer.LightColor, 1.3f);
-					item.shoot = 0;
-				}
-				if(knives >= maxknives){
-					for(int i = 0; i >= knives; i++){
-						Dust.NewDust(player.Center, 1, 1, 226, 0, 0, 0, modPlayer.LightColor, 1.3f);
-					}
-				}
-			}
-            /*if (modPlayer.channeling > 0)
-            {
-				item.shoot = 0;
-				item.useStyle = 4;
-				item.noUseGraphic = false;
-				item.useTime = 10;
-				item.useAnimation = 10;
-				if(charge < maxcharge && base.CanUseItem(player)){
-					for (int j = 0; j < player.inventory.Length; j++)
-					{
-						if (player.inventory[j].type == ItemType<Light>())
-						{
-							player.inventory[j].stack--;
-							charge++;
-							item.damage = 50+charge;
-							return true;
-						}
-					}
-				}else{
-					return false;
-				}
-            }else{
-				item.damage = 50+charge;
-            }*/
             return base.CanUseItem(player);
         }
 
-		public override bool CanRightClick(){
-			return true;
-		}
-		public override void RightClick(Player player){
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			//modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-PointsUsed, 0);
-			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
-		}
 		public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit){
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
 			if(stealthinit){

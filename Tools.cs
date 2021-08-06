@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameInput;
@@ -23,6 +24,41 @@ namespace Light {
         public static string GetHotkeyBinding(this ModHotKey hotkey, string fallback = "") {
             List<string> boundKeys = hotkey.GetAssignedKeys();
             return boundKeys.Count > 0 ? boundKeys[0] : fallback;
+        }
+        public static HotkeyState GetHotkeyState(this ModHotKey hotkey) {
+            return (hotkey.Current?HotkeyState.JustPressed:0)|(hotkey.Old?HotkeyState.JustReleased:0);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LinearSmoothing(ref float smoothed, float target, float rate) {
+            if(target!=smoothed) {
+                if(Math.Abs(target-smoothed)<rate) {
+                    smoothed = target;
+                } else {
+                    if(target>smoothed) {
+                        smoothed+=rate;
+                    }else if(target<smoothed) {
+                        smoothed-=rate;
+                    }
+                }
+            }
+        }
+        public static bool ItemExists(Item item) {
+            return !(item?.IsAir ?? true);
+        }
+        public static Item ItemFromID(int id) {
+            Item item = new Item();
+            item.SetDefaults(id);
+            return item;
+        }
+        public static T[] WithLength<T>(this T[] input, int length) {
+            T[] output = new T[length];
+            if(length>input.Length) {
+                length = input.Length;
+            }
+            for(int i = 0; i < length; i++) {
+                output[i] = input[i];
+            }
+            return output;
         }
     }
     public class BitSet {
@@ -88,5 +124,11 @@ namespace Light {
         public static BitSet Unpack(uint bytes) {
             return new BitSet(bytes);
         }
+    }
+    public enum HotkeyState {
+        Up,
+        JustPressed,
+        JustReleased,
+        Held
     }
 }

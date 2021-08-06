@@ -110,8 +110,7 @@ DisplayCharge1");
 				}else if(tooltips[i].text.Contains("Rainbow Staff")){
 					item.rare = -2;
 					item.expert = true;
-				}else if (tooltips[i].text.Contains("DisplayCharge1"))
-                {
+				}/*else if (tooltips[i].text.Contains("DisplayCharge1")){
                     TooltipLine tip;
 					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
                     tip = new TooltipLine(mod, "DisplayCharge1",
@@ -122,7 +121,7 @@ DisplayCharge1");
 					//if(charge < maxcharge){
                     	tooltips.Insert(i, tip);
 					//}
-                }
+                }*/
             }
         }
 
@@ -210,25 +209,6 @@ DisplayCharge1");
 				//Main.NewText(knives);
 			}else{//*/
 			//}
-            if (modPlayer.channeling > 0)
-            {
-                item.holdStyle = 2;
-				item.noUseGraphic = false;
-				Color color = modPlayer.lightColor;
-				//red | green| blue
-				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
-				if(charge < maxcharge && base.CanUseItem(player)){
-					for (int j = 0; j < player.inventory.Length; j++)
-					{
-						if (player.inventory[j].type == ItemType<LightI>())
-						{
-							player.inventory[j].stack--;
-							charge++;
-							item.damage = 50+charge;
-						}
-					}
-				}
-            }
 			/*if (modPlayer.channeling <= 0)
             {
 				item.shoot = ProjectileType<LightDagger>();
@@ -249,14 +229,6 @@ DisplayCharge1");
                     player.releaseUseItem = true;
 				}
             }*/
-		}
-		public override bool CanRightClick(){
-			return true;
-		}
-		public override void RightClick (Player player){
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			//modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-PointsUsed, 0);
-			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
 		}
 	}
 }

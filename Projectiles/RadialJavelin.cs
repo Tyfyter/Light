@@ -104,7 +104,6 @@ namespace Light.Projectiles
             }
             if(projectile.ai[1] >= 0.7f){
                 projectile.velocity = new Vector2(0, 25);
-                target.AddBuff(BuffType<FallDamage>(), 60, true);
                 target.velocity = projectile.velocity;
                 projectile.Kill();
             }

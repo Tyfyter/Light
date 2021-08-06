@@ -7,16 +7,22 @@ using Light.Buffs;
 using Microsoft.Xna.Framework;
 using static Terraria.ModLoader.ModContent;
 
-namespace Light.NPCs
-{
-    public class NpcDrops : GlobalNPC
-    {
-        public override void NPCLoot(NPC npc)
-        {
-			if(npc.HasBuff(BuffType<Lux>())){
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<LightI>(), 10+Main.rand.Next(20));
-				if(npc.boss){
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<LightI>(), 30+Main.rand.Next(60));
+namespace Light.NPCs {
+    public partial class LightGlobalNPC : GlobalNPC {
+        public override void NPCLoot(NPC npc) {
+            bool umbra = npc.HasBuff(BuffType<Umbra>());
+            bool lux = npc.HasBuff(BuffType<Lux>());
+			if(umbra) {
+				foreach (Player p in debuffed) {
+					int a = Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<ShadeCure>(), 1);
+				}
+				npc.DelBuff(npc.FindBuffIndex(BuffType<Umbra>()));
+				npc.NPCLoot();
+			}
+			if(lux) {
+				//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<LightI>(), 10+Main.rand.Next(20));
+				if(npc.boss) {
+					//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<LightI>(), 30+Main.rand.Next(60));
 				}
 			}
 			byte? pointIndex = null;
@@ -91,9 +97,9 @@ namespace Light.NPCs
                         }
                     }
                 }
-            }else if(npc.HasBuff(BuffType<Lux>())){
+            } else if(npc.HasBuff(BuffType<Lux>())) {
 				for(int i1 = 0; i1 < Main.player.Length; i1++) {
-					if(Main.player[i1].active){
+					if(Main.player[i1].active) {
 						LightPlayer modPlayer = Main.player[i1].GetModPlayer<LightPlayer>();
 						if (Main.rand.Next(4) == 0 && !modPlayer.PointsCollected[31]) {
 							int i = Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<Point_Of_Light>(), 1); //this is where you set what item to drop, ItemType("CustomSword>() is an example of how to add your custom item. and 1 is the amount
@@ -103,10 +109,10 @@ namespace Light.NPCs
 				}
 			}
 
-			if((npc.type == NPCID.Plantera || npc.type == NPCID.PlanterasHook) && Main.rand.Next(0,19) == 0){
+			if((npc.type == NPCID.Plantera || npc.type == NPCID.PlanterasHook) && Main.rand.Next(0,19) == 0) {
 				Item.NewItem(npc.Center, 0, 0, ItemType<SoulOfInosite>(), Main.rand.Next(Main.expertMode ? 20 : 25,40));
 			}
-			if(npc.type == NPCID.PlanterasTentacle && Main.rand.Next(0,49) == 0){
+			if(npc.type == NPCID.PlanterasTentacle && Main.rand.Next(0,49) == 0) {
 				Item.NewItem(npc.Center, 0, 0, ItemType<SoulOfInosite>());
 			}
         }

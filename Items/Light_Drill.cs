@@ -127,19 +127,6 @@ DisplayCharge1");
 			item.useTime = 10;
 			item.useAnimation = 10;
 
-            if (modPlayer.channeling > 0) {
-                item.holdStyle = 1;
-				Color color = modPlayer.lightColor;
-				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);
-				if(charge < MaxCharge && base.CanUseItem(player)){
-					for (int j = 0; j < player.inventory.Length; j++) {
-						if (player.inventory[j].type == ItemType<LightI>()) {
-							player.inventory[j].stack--;
-							charge++;
-						}
-					}
-				}
-            }
 		}
 	}
 }

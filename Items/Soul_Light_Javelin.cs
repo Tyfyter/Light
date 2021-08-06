@@ -127,15 +127,6 @@ namespace Light.Items
 		public override void HoldItem (Player player)
 		{
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			if(type == 0){
-				if(modPlayer.ascendtype != 0){
-					item.type = modPlayer.ascendtype;
-				}else{
-					Item.NewItem(player.Center, new Vector2(), ItemType<LightI>(), 100, true, 0, true);
-					charge = 100;
-					item.type = ItemType<Light_Javelin>();
-				}
-			}
 			item.damage = 225;
             item.holdStyle = 0;
 			if (player.altFunctionUse == 0 && player.itemAnimation == 0)     //2 is right click
@@ -149,31 +140,6 @@ namespace Light.Items
 			if(charge/maxcharge >= 0.75){
 				range = (int)(640+(16*(charge-(maxcharge*0.75))));
 			}
-            if (modPlayer.channeling > 0)
-            {
-                item.holdStyle = 2;
-				item.noUseGraphic = false;
-				Color color = modPlayer.lightColor;
-				//red | green| blue
-				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
-				if(charge < maxcharge && base.CanUseItem(player)){
-					for (int j = 0; j < player.inventory.Length; j++)
-					{
-						if (player.inventory[j].type == ItemType<LightI>() && charge < maxcharge*0.75)
-						{
-							//player.inventory[j].stack--;
-							//charge++;
-							item.damage = 225+charge;
-						}
-						if (player.inventory[j].type == ItemType<LightI>() && charge >= maxcharge*0.75 && player.inventory[j].stack >= 2)
-						{
-							//player.inventory[j].stack -= 2;
-							//charge++;
-							item.damage = 225+charge;
-						}
-					}
-				}
-            }
 			if(modPlayer.Ulting && modPlayer.UltCD <= 0){
 				for(int i2 = 0; i2 < Main.npc.Length; i2++){
 					NPC target2 = Main.npc[i2];
@@ -195,7 +161,7 @@ namespace Light.Items
 		public override void RightClick (Player player){
             LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
 			//modPlayer.PointsInUse = Math.Max(modPlayer.PointsInUse-4, 0);
-			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
+			//Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemType<LightI>(), (int)item.shopCustomPrice);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemID.SoulofLight, charges[0]);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemID.SoulofNight, charges[1]);
 			Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, ItemID.SoulofFright, charges[2]);

@@ -17,20 +17,23 @@ using System.Linq;
 using Light.Items;
 using Light.Buffs;
 using static Terraria.ModLoader.ModContent;
+using Terraria.UI;
+using Light.UI;
 
 //lumancy?
-namespace Light
-{
-	public class Light : Mod
-	{
-        internal static Mod mod;
+namespace Light {
+	public class Light : Mod {
+        private readonly HotKey ModeSwitch = new HotKey("Toggle Lumomancy", Keys.BrowserBack);
+        //private static readonly HotKey Channel = new HotKey("Charge Item", Keys.E);
+        //public static ModHotKey ChargeKey;
+        public static ModHotKey ControlModeSwitch;
+        //public static readonly HotKey Ult = new HotKey("Use Ultimate", Keys.Q);
 
-		/*public static void RedundantFunc()
-		{
-			var something = System.Linq.Enumerable.Range(1, 10);
-        }*/
-        public static ModHotKey ChargeKey;
-		public static void ApplyLuxBoosts(ref NPC npc){
+        internal static Mod mod;
+		internal UserInterface UI;
+		internal static bool forgingHotbarActive;
+
+		public static void ApplyLuxBoosts(ref NPC npc) {
 
 			npc.npcSlots *= 20f;
 			npc.damage = (int)(npc.damage*1.56);
@@ -43,7 +46,7 @@ namespace Light
             npc.rarity = (int)Math.Max(npc.rarity + 1, npc.rarity * 1.5f);
 			//npc.DisplayName.set("Lux "+npc.DisplayName.Get());
 		}
-		public static void ApplyShadeBoosts(ref NPC npc){
+		public static void ApplyShadeBoosts(ref NPC npc) {
 
 			npc.npcSlots *= 20f;
 			npc.damage = (int)(npc.damage*2.56);
@@ -56,7 +59,7 @@ namespace Light
 			npc.GivenName = "Umbra " + npc.GivenOrTypeName;
             npc.rarity = (int)Math.Max(npc.rarity + 2, npc.rarity * 2);
             //npc.modNPC.music = MusicID.PumpkinMoon;
-            if(npc.modNPC != null){
+            if(npc.modNPC != null) {
                 npc.modNPC.music = MusicID.PumpkinMoon;
                 //npc.modNPC.music = -255;
             }
@@ -64,104 +67,74 @@ namespace Light
 			//npc.DisplayName.set("Umbra "+npc.DisplayName.Get());
 		}
 
-        private HotKey Channel = new HotKey("Charge Item", Keys.E);
-        private HotKey Ult = new HotKey("Use Ultimate", Keys.Q);
 		public static int LightCurrencyID;
-		public override void Load(){
+		public override void Load() {
             mod = this;
             LightItem.LightItems = new HashSet<int>();
-            ChargeKey = RegisterHotKey(Channel.Name, Channel.DefaultKey.ToString());
-            RegisterHotKey(Ult.Name, Ult.DefaultKey.ToString());
-			LightCurrencyID = CustomCurrencyManager.RegisterCurrency(new LightForgeData(ModContent.ItemType<LightI>(), 999L));  //this defines the item Currency, so CustomCurrencyItem now is a Currency
-            //ChargeKey = Light.Cha;
+            ControlModeSwitch = ModeSwitch.Register(this);
 		}
         public override void Unload() {
             LightItem.LightItems = null;
+            ControlModeSwitch = null;
         }
-        public Light()
-		{
-			Properties = new ModProperties()
-			{
+        public Light() {
+			Properties = new ModProperties() {
 				Autoload = true,
 				AutoloadGores = true,
 				AutoloadSounds = true
 			};
 		}
+		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
+            if(forgingHotbarActive) {
+                if(Main.playerInventory) {
 
-		public static bool GetBitFromInt(int data, int position){
+                    return;
+                }
+			    int inventoryIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Hotbar"));
+			    if (inventoryIndex != -1) {
+                    layers[inventoryIndex] = new LegacyGameInterfaceLayer(
+                        "Light: ForgeHotbarUI",
+                        delegate {
+                            // If the current UIState of the UserInterface is null, nothing will draw. We don't need to track a separate .visible value.
+                            ForgingHotbarUI.Draw();
+                            return true;
+                        },
+                        InterfaceScaleType.UI);
+			    }
+            }
+		}
+
+		public static bool GetBitFromInt(int data, int position) {
 			int intReturn = data & (1 << position);
 			return (intReturn != 0);
 		}
 
-		public static void SetBitToInt(ref int data, int position){
+		public static void SetBitToInt(ref int data, int position) {
 			data |= (1 << position);
 		}
 
-		public static void UnsetBitToInt(ref int data, int position){
+		public static void UnsetBitToInt(ref int data, int position) {
 			data &= ~(1 << position);
 		}
 
-        public static string ReconsructString(string[] cut){
-            string full = "";
-            for(int i = 0; i > cut.Length; i++){
-                full = full + cut[i];
-            }
-            return full;
-        }
-        public override void AddRecipeGroups()
-        {
-            RecipeGroup group = new RecipeGroup(() => "Vines or Vine Ropes", new int[]
-            {
+        public override void AddRecipeGroups() {
+            RecipeGroup group = new RecipeGroup(() => "Vines", new int[] {
                 ItemID.Vine,
                 ItemID.VineRope
             });
             RecipeGroup.RegisterGroup("Light:Vines", group);
         }
 
-        public override void HotKeyPressed(string name) {
-            if(PlayerInput.Triggers.Current.KeyStatus[GetTriggerName(name)]) {
-                if(name.Equals(Channel.Name)) {
-                    ChannelF();
-                }
-                if(name.Equals(Ult.Name)) {
-                    UltF();
-                }
-            }
-        }
-
-        public void ChannelF()
-        {
-            Player player = Main.player[Main.myPlayer];
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			modPlayer.channeling = 2;
-			//player.HeldItem.ReloadGun();
-        }
-        public void UltF()
-        {
-            Player player = Main.player[Main.myPlayer];
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			modPlayer.Ult = 3;
-			//player.HeldItem.ReloadGun();
-        }
-
-        public string GetTriggerName(string name)
-        {
-            return Name + ": " + name;
-        }
-        public static short SetStaticDefaultsGlowMask(ModItem modItem)
-        {
-            if (Main.netMode!=NetmodeID.Server)
-            {
+        public static short SetStaticDefaultsGlowMask(ModItem modItem) {
+            if (Main.netMode!=NetmodeID.Server) {
                 Texture2D[] glowMasks = new Texture2D[Main.glowMaskTexture.Length + 1];
-                for (int i = 0; i < Main.glowMaskTexture.Length; i++)
-                {
+                for (int i = 0; i < Main.glowMaskTexture.Length; i++) {
                     glowMasks[i] = Main.glowMaskTexture[i];
                 }
                 glowMasks[glowMasks.Length - 1] = mod.GetTexture("Items/" + modItem.GetType().Name);
                 Main.glowMaskTexture = glowMasks;
                 return (short)(glowMasks.Length - 1);
-            }
-            else return 0;
+            } else return 0;
         }
 	}
 }

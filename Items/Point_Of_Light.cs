@@ -32,16 +32,6 @@ namespace Light.Items
 			item.autoReuse = true;
 		}
 
-
-        public override bool CanUseItem(Player player)
-        {
-            LightPlayer modPlayer = player.GetModPlayer<LightPlayer>();
-			int a = NPC.NewNPC((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<LightForgeNpc>());
-			((LightForgeNpc)Main.npc[a].modNPC).owner = modPlayer;
-			Main.npc[a].GivenName = ((LightForgeNpc)Main.npc[a].modNPC).TownNPCName();
-            return base.CanUseItem(player);
-        }
-
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             for (int i = 0; i < tooltips.Count; i++)

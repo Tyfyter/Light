@@ -10,11 +10,12 @@ using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 using Light.Items;
 using System.IO;
+using Terraria.GameInput;
+using Terraria.UI;
 
 namespace Light {
     public class LightPlayer : ModPlayer {
 		public bool LightArmor = false;
-		public int channeling = 0;
 		public int Ult = 0;
 		public bool Ulting = false;
 		public int UltCD = 0;
@@ -28,25 +29,110 @@ namespace Light {
 		public Color lightColor = new Color(255, 255, 255);
         public bool phasing = false;
         public int tempcharge = 0;
+        public bool forging = false;
+        public float forgeGlow = 0f;
+        public int forgeSelectedItem = 0;
+        public bool invalidSlotForForging = false;
+        public int[] ForgeHotbarItems { get; internal set; }
+        internal Item[] forgeableItems;
 
         public override void ResetEffects() {
-			//pointsTotal = -PointsInUse;
-			LightArmor = false;
-            if(channeling>0) {
-                channeling--;
-            }
-            if(shadeCure>0) {
+            //pointsTotal = -PointsInUse;
+            LightArmor = false;
+            if(shadeCure > 0) {
                 shadeCure--;
             }
-            if(UltCD>0) {
+            if(UltCD > 0) {
                 UltCD--;
             }
-            if(Ult>0) {
+            if(Ult > 0) {
                 Ult--;
             }
-			Ulting = Ult == 1;
+            Ulting = Ult == 1;
             lightdamage = 1f;
             ascendtype = 0;
+        }
+        public override void SetControls() {
+            forging = false;
+            switch(Light.ControlModeSwitch.GetHotkeyState()) {
+                case HotkeyState.JustPressed:
+                forgeSelectedItem = 0;
+                invalidSlotForForging = false;
+                if(Tools.ItemExists(player.HeldItem) && !(player.HeldItem.modItem is LightItem)) {
+                    invalidSlotForForging = true;
+                    break;
+                }
+                forgeableItems = ForgeHotbarItems.Select(Tools.ItemFromID).ToArray();
+                goto case HotkeyState.Held;
+
+                case HotkeyState.Held:
+                if(invalidSlotForForging) {
+                    break;
+                }
+                forging = true;
+                int scrollDirection = Math.Sign(PlayerInput.ScrollWheelDelta);
+                if(PlayerInput.ScrollWheelDelta*scrollDirection>=60) {
+                    forgeSelectedItem = ((forgeSelectedItem - scrollDirection) + 10)%10;
+                    PlayerInput.ScrollWheelDelta = 0;
+                }
+                #region hotbar keys
+                if(PlayerInput.Triggers.Current.Hotbar1) {
+					forgeSelectedItem = 0;
+                    PlayerInput.Triggers.Current.Hotbar1 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar2) {
+					forgeSelectedItem = 1;
+                    PlayerInput.Triggers.Current.Hotbar2 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar3) {
+					forgeSelectedItem = 2;
+                    PlayerInput.Triggers.Current.Hotbar3 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar4) {
+					forgeSelectedItem = 3;
+                    PlayerInput.Triggers.Current.Hotbar4 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar5) {
+					forgeSelectedItem = 4;
+                    PlayerInput.Triggers.Current.Hotbar5 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar6) {
+					forgeSelectedItem = 5;
+                    PlayerInput.Triggers.Current.Hotbar6 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar7) {
+					forgeSelectedItem = 6;
+                    PlayerInput.Triggers.Current.Hotbar7 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar8) {
+					forgeSelectedItem = 7;
+                    PlayerInput.Triggers.Current.Hotbar8 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar9) {
+					forgeSelectedItem = 8;
+                    PlayerInput.Triggers.Current.Hotbar9 = false;
+				}
+				if (PlayerInput.Triggers.Current.Hotbar10) {
+					forgeSelectedItem = 9;
+                    PlayerInput.Triggers.Current.Hotbar10 = false;
+				}
+                #endregion
+                break;
+
+                case HotkeyState.JustReleased:
+                if(!Tools.ItemExists(player.HeldItem) || (player.HeldItem.modItem is LightItem)) {
+                    player.HeldItem.SetDefaults(ForgeHotbarItems[forgeSelectedItem]);
+                    break;
+                }
+                break;
+            }
+            Light.forgingHotbarActive = forging;
+        }
+        public override void PostUpdateMiscEffects() {
+            Tools.LinearSmoothing(ref forgeGlow, forging?1:0, 0.1f+(forging?forgeGlow*0.1f:(1-forgeGlow)*0.1f));
+            if(forgeGlow>0) {
+                Lighting.AddLight(player.MountedCenter, lightColor.ToVector3()*forgeGlow);
+            }
         }
         public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff) {
             for(int i = 0; i < 5; i++) {
@@ -67,6 +153,7 @@ namespace Light {
 			return new TagCompound {
                 { "LightColor", lightColor },
                 { "PointsCollected", PointsCollected.Pack() },
+                { "ForgeHotbarItems", ForgeHotbarItems },
                 { "LastVer",  versionString }
 			};
 		}
@@ -78,6 +165,10 @@ namespace Light {
             } catch(Exception) {
                 PointsCollected = BitSet.Zero;
             }
+            ForgeHotbarItems = new int[10];
+            try {
+                ForgeHotbarItems = tag.Get<int[]>("ForgeHotbarItems").WithLength(10);
+            } catch(Exception) {}
             string a = player.name;
             string versionString = "0.0.0.0";
             try {
@@ -86,7 +177,7 @@ namespace Light {
                 if(e is IOException) {
                     try {
                         int[] vers = tag.Get<int[]>("LastVer");
-                        versionString = $"{vers[0]}.{vers[1]}.{vers[2]}.{vers[3]}";
+                        versionString = $" {vers[0]}. {vers[1]}. {vers[2]}. {vers[3]}";
                     } catch(Exception) { }
                 }
             }

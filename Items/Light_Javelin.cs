@@ -99,30 +99,6 @@ namespace Light.Items {
 			if(charge/maxcharge >= 0.75) {
 				range = (int)(240+(16*(charge-(maxcharge*0.75))));
 			}
-            if (modPlayer.channeling > 0) {
-                item.holdStyle = 2;
-				item.noUseGraphic = false;
-				Color color = modPlayer.lightColor;
-				//red | green| blue
-				Lighting.AddLight(player.Center, color.R/255, color.G/255, color.B/255);  //this defines the projectile light color
-				if(charge < maxcharge && base.CanUseItem(player)) {
-					for (int j = 0; j < player.inventory.Length; j++) {
-						if (player.inventory[j].type == ItemType<LightI>() && charge < maxcharge*0.75) {
-							player.inventory[j].stack--;
-							charge++;
-							item.damage = 125+charge;
-						}
-						if (player.inventory[j].type == ItemType<LightI>() && charge >= maxcharge*0.75 && player.inventory[j].stack >= 3) {
-							player.inventory[j].stack -= 3;
-							charge++;
-							item.damage = 125+charge;
-						}
-					}
-				}
-            }
-			if (modPlayer.ascendtype != 0) {
-				Ascend(modPlayer.ascendtype);
-			}
 			if(modPlayer.Ulting && modPlayer.UltCD <= 0 && charge/maxcharge >= 0.75) {
 				for(int i2 = 0; i2 < Main.npc.Length; i2++) {
 					NPC target2 = Main.npc[i2];

@@ -30,7 +30,7 @@ namespace Light.Items {
 					tip.overrideColor = color;
                     tooltips.RemoveAt(i);
                     tooltips.Insert(i, tip);
-                }else if (tooltips[i].Name.Equals("Tooltip1")) {
+                }/*else if (tooltips[i].Name.Equals("Tooltip1")) {
                     TooltipLine tip;
 					//tooltips[i].text.Substring(8, tooltips[i].text.Length-8);
                     tip = new TooltipLine(mod, "Tooltip1",
@@ -48,7 +48,7 @@ namespace Light.Items {
 					if(charge < MaxCharge){
                     	tooltips.Insert(i, tip);
 					}
-                }
+                }*/
             }
         }
 		public override TagCompound Save(){

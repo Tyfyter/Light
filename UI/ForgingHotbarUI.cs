@@ -17,12 +17,9 @@ namespace Light.UI {
             if (Main.LocalPlayer.ghost) {
 		        return;
 	        }
-            if(Main.playerInventory) {
-
-            }
             Player player = Main.LocalPlayer;
             LightPlayer lightPlayer = player.GetModPlayer<LightPlayer>();
-            Item forgeSelectedItem = lightPlayer.forgeableItems[lightPlayer.forgeSelectedItem];
+            Item forgeSelectedItem = lightPlayer.forgeItems[lightPlayer.forgeSelectedItem];
             Texture2D backTexture = Main.inventoryBack13Texture;
 	        string text = "";
 	        if (!string.IsNullOrEmpty(forgeSelectedItem.Name)) {
@@ -55,13 +52,11 @@ namespace Light.UI {
 		        Main.inventoryScale = hotbarScale;
                 UITools.DrawColoredItemSlot(
                     Main.spriteBatch,
-                    ref lightPlayer.forgeableItems[i],
+                    ref lightPlayer.forgeItems[i],
                     new Vector2(posX, posY),
                     backTexture,
                     lightPlayer.lightColor,
                     lightColor);
-			    //Main.spriteBatch.Draw(backTexture, position, null, lightPlayer.lightColor, 0f, default(Vector2), Main.inventoryScale, SpriteEffects.None, 0f);
-		        //ItemSlot.Draw(Main.spriteBatch, ref lightPlayer.forgeableItems[i], ItemSlot.Context.ChatItem, position, lightColor);
 		        Main.inventoryScale = oldInventoryScale;
 		        posX += (int)(backTexture.Width * Main.hotbarScale[i]) + 4;
 	        }

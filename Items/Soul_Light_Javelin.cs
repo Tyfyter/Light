@@ -38,6 +38,7 @@ namespace Light.Items
 			TypeNames[5] = "";
 			TypeNames[6] = "";
 			//TypeNames[7] = "";
+            //RegisterLightItem();
 		}
 		public override void SetDefaults()
 		{
@@ -59,7 +60,6 @@ namespace Light.Items
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = false;
 			item.shopCustomPrice = 45;
-			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
 
 		public override TagCompound Save()

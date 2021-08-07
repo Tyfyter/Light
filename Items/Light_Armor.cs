@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace Light.Items
 {
-	public class Light_Armor : ModItem
+	public class Light_Armor : LightItem
 	{
 		int charge = 0;
 		int maxcharge = 70;
@@ -19,11 +19,15 @@ namespace Light.Items
 			get { return "Terraria/Item_" + ItemID.HellwingBow; }
 		}*/
 		public override bool CloneNewInstances => true;
-		public override void SetStaticDefaults()
+
+        public override int PointsUsed => 4;
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Light Armor");
 			Tooltip.SetDefault(@"Right click in inventory to dispel, left click to equip.
 			DisplayCharge");
+            RegisterLightItem();
 		}
 		public override void SetDefaults()
 		{

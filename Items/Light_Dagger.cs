@@ -15,26 +15,28 @@ using Light.Buffs;
 
 namespace Light.Items
 {
-	public class Light_Dagger : ModItem
+	public class Light_Dagger : LightItem
 	{
-		int charge = 0;
 		int maxcharge = 25;
 		int knives = 0;
 		int maxknives = 10;
 		int duration = 300;
 		int range = 240;
 		bool stealthinit = false;
-		int PointsUsed = 4;
         public static short customGlowMask = 0;
 		public static string AbilityName = "";
         public override bool CloneNewInstances => true;
-		public override void SetStaticDefaults()
+
+        public override int PointsUsed => 4;
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Light Dagger");
 			Tooltip.SetDefault(@"Right click in your invetory to dispel,
 			DisplayCharge2
 			DisplayCharge1");
             customGlowMask = Light.SetStaticDefaultsGlowMask(this);
+            RegisterLightItem();
 		}
 		public override void SetDefaults()
 		{
@@ -56,7 +58,6 @@ namespace Light.Items
 			item.shootSpeed = 12.5f;
             item.glowMask = customGlowMask;
 			item.shopCustomPrice = 30;
-			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
 
 		public override TagCompound Save()

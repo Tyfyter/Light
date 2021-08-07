@@ -64,6 +64,7 @@ namespace Light {
     public class BitSet {
         const uint UOne = 1;
         readonly HashSet<byte> bits;
+        public int Count => bits.Count;
         public bool this[byte i] {
             get {
                 return bits.Contains(i);

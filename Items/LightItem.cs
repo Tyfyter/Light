@@ -10,10 +10,13 @@ using Terraria.ModLoader.IO;
 
 namespace Light.Items {
     public abstract class LightItem : ModItem {
-        public static HashSet<int> LightItems { get; internal set; }
+        public static HashSet<(int type, int points)> LightItems { get; internal set; }
 		public int charge = 0;
 		public virtual int MaxCharge { get => 10; set { } }
-		public virtual int PointsUsed => 1;
+		public abstract int PointsUsed { get; }
+        protected void RegisterLightItem() {
+            LightItems.Add((item.type, PointsUsed));
+        }
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
 			Color color = LightConfig.Instance.LightColor;
             if(tooltips[0].text.Contains("Rainbow")){

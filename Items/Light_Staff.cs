@@ -10,11 +10,11 @@ using Light.Projectiles;
 
 namespace Light.Items
 {
-	public class Light_Staff : ModItem
+	public class Light_Staff : LightItem
 	{
 		int charge = 0;
 		int maxcharge = 25;
-		int PointsUsed = 2;
+		public override int PointsUsed => 2;
         public static short customGlowMask = 0;
 		public override bool CloneNewInstances => true;
 		public override void SetStaticDefaults()
@@ -24,6 +24,7 @@ namespace Light.Items
 DisplayCharge2
 DisplayCharge1");
             customGlowMask = Light.SetStaticDefaultsGlowMask(this);
+            RegisterLightItem();
 		}
 		public override void SetDefaults()
 		{
@@ -41,7 +42,6 @@ DisplayCharge1");
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = true;
 			item.shopCustomPrice = 15;
-			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
 
 		public override TagCompound Save()

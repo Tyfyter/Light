@@ -29,7 +29,7 @@ namespace Light {
         public static ModHotKey ControlModeSwitch;
         //public static readonly HotKey Ult = new HotKey("Use Ultimate", Keys.Q);
 
-        internal static Mod mod;
+        public static Light Instance { get; private set; }
 		internal UserInterface UI;
 		internal static bool forgingHotbarActive;
 
@@ -61,21 +61,23 @@ namespace Light {
             //npc.modNPC.music = MusicID.PumpkinMoon;
             if(npc.modNPC != null) {
                 npc.modNPC.music = MusicID.PumpkinMoon;
-                //npc.modNPC.music = -255;
             }
 			//npc.music = 0;
 			//npc.DisplayName.set("Umbra "+npc.DisplayName.Get());
 		}
 
-		public static int LightCurrencyID;
 		public override void Load() {
-            mod = this;
-            LightItem.LightItems = new HashSet<int>();
+            Instance = this;
+            LightItem.LightItems = new HashSet<(int, int)>();
             ControlModeSwitch = ModeSwitch.Register(this);
+			if (Main.netMode!=NetmodeID.Server){
+				UI = new UserInterface();
+			}
 		}
         public override void Unload() {
             LightItem.LightItems = null;
             ControlModeSwitch = null;
+            UI = null;
         }
         public Light() {
 			Properties = new ModProperties() {
@@ -87,23 +89,46 @@ namespace Light {
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
             if(forgingHotbarActive) {
                 if(Main.playerInventory) {
-
+                    forgingHotbarActive = false;
                     return;
                 }
-			    int inventoryIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Hotbar"));
-			    if (inventoryIndex != -1) {
-                    layers[inventoryIndex] = new LegacyGameInterfaceLayer(
+			    int hotbarIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Hotbar"));
+			    if (hotbarIndex != -1) {
+                    layers[hotbarIndex] = new LegacyGameInterfaceLayer(
                         "Light: ForgeHotbarUI",
                         delegate {
-                            // If the current UIState of the UserInterface is null, nothing will draw. We don't need to track a separate .visible value.
                             ForgingHotbarUI.Draw();
                             return true;
                         },
                         InterfaceScaleType.UI);
 			    }
             }
+			int inventoryIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
+			if (inventoryIndex != -1) {
+                if(!Main.playerInventory && ForgeSelectorUIActive) {
+                    UI.SetState(null);
+                    return;
+                }
+                layers.Insert(inventoryIndex + 1, new LegacyGameInterfaceLayer(
+                    "Light: ForgeInventoryUI",
+                    delegate {
+                        // If the current UIState of the UserInterface is null, nothing will draw. We don't need to track a separate .visible value.
+						UI.Draw(Main.spriteBatch, new GameTime());
+                        return true;
+                    },
+                    InterfaceScaleType.UI)
+                );
+			}
 		}
-
+        public bool ForgeSelectorUIActive => UI.CurrentState is ForgingInventoryUI;
+        public void ToggleForgeSelectorUI() {
+            if(UI.CurrentState is ForgingInventoryUI) {
+                UI.SetState(null);
+            } else {
+                ForgingInventoryUI forgingUI = new ForgingInventoryUI();
+                UI.SetState(forgingUI);
+            }
+        }
 		public static bool GetBitFromInt(int data, int position) {
 			int intReturn = data & (1 << position);
 			return (intReturn != 0);
@@ -131,7 +156,7 @@ namespace Light {
                 for (int i = 0; i < Main.glowMaskTexture.Length; i++) {
                     glowMasks[i] = Main.glowMaskTexture[i];
                 }
-                glowMasks[glowMasks.Length - 1] = mod.GetTexture("Items/" + modItem.GetType().Name);
+                glowMasks[glowMasks.Length - 1] = Instance.GetTexture("Items/" + modItem.GetType().Name);
                 Main.glowMaskTexture = glowMasks;
                 return (short)(glowMasks.Length - 1);
             } else return 0;

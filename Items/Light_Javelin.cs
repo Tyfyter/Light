@@ -25,6 +25,7 @@ namespace Light.Items {
 			DisplayCharge2
 			DisplayCharge1");
             customGlowMask = Light.SetStaticDefaultsGlowMask(this);
+            RegisterLightItem();
 		}
 		public override void SetDefaults() {
 			item.damage = 125;
@@ -45,7 +46,6 @@ namespace Light.Items {
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = false;
 			item.shopCustomPrice = 45;
-			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
 
 		public override bool NewPreReforge() {

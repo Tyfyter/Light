@@ -29,12 +29,12 @@ namespace Light {
 		public Color lightColor = new Color(255, 255, 255);
         public bool phasing = false;
         public int tempcharge = 0;
-        public bool forging = false;
         public float forgeGlow = 0f;
         public int forgeSelectedItem = 0;
         public bool invalidSlotForForging = false;
         public int[] ForgeHotbarItems { get; internal set; }
-        internal Item[] forgeableItems;
+        public List<int> ForgeableItems { get; internal set; }
+        internal Item[] forgeItems;
 
         public override void ResetEffects() {
             //pointsTotal = -PointsInUse;
@@ -53,16 +53,25 @@ namespace Light {
             ascendtype = 0;
         }
         public override void SetControls() {
-            forging = false;
-            switch(Light.ControlModeSwitch.GetHotkeyState()) {
+            bool forging = false;
+            if(Main.playerInventory) {
+                if(Light.ControlModeSwitch.JustPressed) {
+                    SetupForgeableItems();
+                    forgeItems = ForgeHotbarItems.Select(Tools.ItemFromID).ToArray();
+                    Light.Instance.ToggleForgeSelectorUI();
+                }
+            } else switch(Light.ControlModeSwitch.GetHotkeyState()) {
                 case HotkeyState.JustPressed:
                 forgeSelectedItem = 0;
                 invalidSlotForForging = false;
+                if(PointsCollected.Count<1) {
+                    break;
+                }
                 if(Tools.ItemExists(player.HeldItem) && !(player.HeldItem.modItem is LightItem)) {
                     invalidSlotForForging = true;
                     break;
                 }
-                forgeableItems = ForgeHotbarItems.Select(Tools.ItemFromID).ToArray();
+                forgeItems = ForgeHotbarItems.Select(Tools.ItemFromID).ToArray();
                 goto case HotkeyState.Held;
 
                 case HotkeyState.Held:
@@ -120,7 +129,7 @@ namespace Light {
                 break;
 
                 case HotkeyState.JustReleased:
-                if(!Tools.ItemExists(player.HeldItem) || (player.HeldItem.modItem is LightItem)) {
+                if(Light.forgingHotbarActive && (!Tools.ItemExists(player.HeldItem) || (player.HeldItem.modItem is LightItem))) {
                     player.HeldItem.SetDefaults(ForgeHotbarItems[forgeSelectedItem]);
                     break;
                 }
@@ -129,7 +138,7 @@ namespace Light {
             Light.forgingHotbarActive = forging;
         }
         public override void PostUpdateMiscEffects() {
-            Tools.LinearSmoothing(ref forgeGlow, forging?1:0, 0.1f+(forging?forgeGlow*0.1f:(1-forgeGlow)*0.1f));
+            Tools.LinearSmoothing(ref forgeGlow, Light.forgingHotbarActive?1:0, 0.1f+(Light.forgingHotbarActive?forgeGlow*0.1f:(1-forgeGlow)*0.1f));
             if(forgeGlow>0) {
                 Lighting.AddLight(player.MountedCenter, lightColor.ToVector3()*forgeGlow);
             }
@@ -147,6 +156,22 @@ namespace Light {
                 return true;
             }
             return false;
+        }
+        public void SetupForgeableItems() {
+            int pointCount = PointsCollected.Count;
+            ForgeableItems = LightItem.LightItems.Where(v => v.points <= pointCount).OrderBy(v => v.points).Select(v => v.type).ToList();
+            ForgeableItems.Insert(0, 0);
+        }
+        public int GetOffsetForgeableItemType(int start, int offset) {
+            int index = ForgeableItems.IndexOf(start);
+            index += offset;
+            while(index>=ForgeableItems.Count) {
+                index -= ForgeableItems.Count;
+            }
+            while(index<0) {
+                index += ForgeableItems.Count;
+            }
+            return ForgeableItems[index];
         }
 		public override TagCompound Save() {
             string versionString = mod.Version.ToString();

@@ -100,7 +100,7 @@ namespace Light.NPCs {
 		}
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit) {
 			if(item.type >= Terraria.ID.ItemID.Count) {
-				if(item.modItem.mod == Light.mod && npc.HasBuff(BuffType<Umbra>())) {
+				if(item.modItem.mod == Light.Instance && npc.HasBuff(BuffType<Umbra>())) {
 					damage = (int)(damage*1.5f);
 					crit = true;
 					if(Main.rand.Next(2) == 0) {
@@ -111,7 +111,7 @@ namespace Light.NPCs {
 		}
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) {
 			if(projectile.type >= Terraria.ID.ProjectileID.Count) {
-				if (projectile.modProjectile.mod == Light.mod && npc.HasBuff(BuffType<Umbra>())) {
+				if (projectile.modProjectile.mod == Light.Instance && npc.HasBuff(BuffType<Umbra>())) {
 					damage = (int)(damage*1.5f);
 					crit = true;
 					if(Main.rand.Next(2) == 0) {

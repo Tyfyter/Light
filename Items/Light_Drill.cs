@@ -57,6 +57,9 @@ namespace Light.Items {
                 return maxcharge;
             }
         }
+
+        public override int PointsUsed => 1;
+
         public static short customGlowMask = 0;
 		public override void SetStaticDefaults() {
 			DisplayName.SetDefault("Light Drill");
@@ -64,6 +67,7 @@ namespace Light.Items {
 DisplayCharge2
 DisplayCharge1");
             customGlowMask = Light.SetStaticDefaultsGlowMask(this);
+            RegisterLightItem();
 		}
 		public override void SetDefaults() {
 			item.damage = 5;
@@ -83,7 +87,6 @@ DisplayCharge1");
 			item.autoReuse = true;
 			item.useTurn = true;
 			item.shopCustomPrice = 10;
-			item.shopSpecialCurrency = Light.LightCurrencyID;
 		}
 		public override TagCompound Save() {
 			return new TagCompound {

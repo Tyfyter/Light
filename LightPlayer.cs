@@ -177,7 +177,7 @@ namespace Light {
             string versionString = mod.Version.ToString();
 			return new TagCompound {
                 { "LightColor", lightColor },
-                { "PointsCollected", PointsCollected.Pack() },
+                { "PointsCollected", PointsCollected?.Pack() },
                 { "ForgeHotbarItems", ForgeHotbarItems },
                 { "LastVer",  versionString }
 			};
